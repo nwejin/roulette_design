@@ -15,11 +15,11 @@ import "./App.css";
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
   marginTop: "20px",
-  width: "100%",
+  width: "200px", // 버튼의 너비를 줄임
   fontSize: 20,
   color: "#fff",
   backgroundColor: red[500],
-  padding: "15px",
+  padding: "10px", // 패딩을 줄여서 버튼 크기를 줄임
   borderRadius: "10px",
   "&:hover": {
     backgroundColor: red[700],
@@ -100,6 +100,23 @@ function App() {
     console.log('Result:', resultData);  // 파일 저장 대신 콘솔에 출력
   };
 
+  const getResultMessage = () => {
+    switch (data[prizeNumber].option) {
+      case "1등":
+        return "축하합니다! 1등 당첨!";
+      case "2등":
+        return "아쉽네요, 2등입니다.";
+      case "3등":
+        return "3등 당첨! 다음엔 더 높게!";
+      case "4등":
+        return "4등입니다. 조금만 더 힘내세요!";
+      case "꽝":
+        return "ㅠㅠ 다음 기회에";
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       <div className="roulette-layout">
@@ -107,7 +124,10 @@ function App() {
           <h1>룰렛</h1>
           <Wheel
             mustStartSpinning={mustSpin}
-            data={data}
+            data={data.map((item) => ({
+              option: item.option,
+              style: item.style,
+            }))}
             prizeNumber={prizeNumber}
             outerBorderWidth={2}
             innerBorderWidth={2}
@@ -147,7 +167,7 @@ function App() {
             flexDirection: "column",
             backgroundColor: "white",
             width: "45%",
-            height: "40%",
+            height: "45%", // 크기를 더 크게 설정
             maxWidth: "100vw",
             maxHeight: "100%",
             position: "fixed",
@@ -172,14 +192,17 @@ function App() {
           <span style={{ fontSize: "60px" }}>
             {data[prizeNumber] ? data[prizeNumber].option : ""}
           </span>
+          <span style={{ fontSize: "30px", color: "red", marginTop: "20px" }}>
+            {getResultMessage()}
+          </span>
           {data[prizeNumber].imageUrl && (
             <img
               src={data[prizeNumber].imageUrl}
               alt={data[prizeNumber].option}
               style={{
                 marginTop: "20px",
-                maxWidth: "100%",
-                maxHeight: "200px",
+                maxWidth: "80%", // 이미지가 더 크게 표시되도록 설정
+                maxHeight: "250px", // 높이를 더 크게 설정
                 objectFit: "contain",
               }}
             />

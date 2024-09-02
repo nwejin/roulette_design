@@ -10,9 +10,58 @@ import {
   styled,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
-import CloseIcon from "@mui/icons-material/Close";
 import { QrReader } from "react-qr-reader";
+import CloseIcon from "@mui/icons-material/Close";
 import "./App.css";
+
+// 데이터 타입 정의
+interface PrizeData {
+  option: string;
+  style: {
+    backgroundColor: string;
+    textColor: string;
+  };
+  probability: number;
+  imageUrl: string;
+}
+
+// 데이터 배열
+const data: PrizeData[] = [
+  {
+    option: "1등",
+    style: { backgroundColor: "#FFB6C1", textColor: "black" },
+    probability: 3,
+    imageUrl:
+      "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
+  },
+  {
+    option: "2등",
+    style: { backgroundColor: "#ADD8E6", textColor: "black" },
+    probability: 7,
+    imageUrl:
+      "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
+  },
+  {
+    option: "3등",
+    style: { backgroundColor: "#90EE90", textColor: "black" },
+    probability: 15,
+    imageUrl:
+      "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
+  },
+  {
+    option: "4등",
+    style: { backgroundColor: "#FFFACD", textColor: "black" },
+    probability: 25,
+    imageUrl:
+      "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+  },
+  {
+    option: "꽝",
+    style: { backgroundColor: "#D3D3D3", textColor: "black" },
+    probability: 50,
+    imageUrl: "",
+  },
+];
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
   marginTop: "20px",
@@ -27,10 +76,6 @@ const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
     color: "#fff",
   },
 }));
-
-const data = [
-  // data definition remains the same
-];
 
 function App() {
   const [mustSpin, setMustSpin] = useState(false);
@@ -66,10 +111,8 @@ function App() {
       setShowQR(false);
       handleAuthenticationSuccess();
     } else if (result === null) {
-      // QR 코드를 찾지 못했을 때의 처리
       console.log("No QR code found");
     } else if (result instanceof Error) {
-      // 에러 발생 시 처리
       console.error("QR Reader error:", result);
       setCameraError(`QR 스캐너 오류: ${result.message}`);
       setShowQR(false);
@@ -192,7 +235,7 @@ function App() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            position: "relative", // Ensure children are positioned relative to this container
+            position: "relative",
           }}
         >
           {cameraError ? (
@@ -201,11 +244,11 @@ function App() {
             <QrReader
               onResult={handleScan}
               constraints={{ facingMode: 'environment' }}
-              containerStyle={{ width: "100%", height: "100%" }} // Full width and height
+              containerStyle={{ width: "100%", height: "100%" }}
               videoStyle={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover", // Ensure video covers container
+                objectFit: "cover",
               }}
             />
           )}
@@ -214,7 +257,7 @@ function App() {
             style={{
               marginTop: "10px",
               position: "absolute",
-              bottom: "10px", // Position button at the bottom
+              bottom: "10px",
               left: "50%",
               transform: "translateX(-50%)",
             }}

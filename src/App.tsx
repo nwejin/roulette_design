@@ -1,18 +1,17 @@
+import React, { useState } from "react";
+import { Wheel } from "react-custom-roulette";
 import {
   Box,
   Button,
   ButtonProps,
   Modal,
   Snackbar,
-  styled,
   Alert,
+  styled,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
-import React, { useState } from "react";
-import { Wheel } from "react-custom-roulette";
-import "./App.css";
 import CloseIcon from "@mui/icons-material/Close";
-import { saveAs } from 'file-saver';
+import "./App.css";
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
   marginTop: "20px",
@@ -29,11 +28,36 @@ const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 const data = [
-  { option: "1등", style: { backgroundColor: "#f44336", textColor: "white" }, probability: 3 },
-  { option: "2등", style: { backgroundColor: "#2196f3", textColor: "white" }, probability: 7 },
-  { option: "3등", style: { backgroundColor: "#4caf50", textColor: "white" }, probability: 15 },
-  { option: "4등", style: { backgroundColor: "#ffeb3b", textColor: "black" }, probability: 25 },
-  { option: "꽝", style: { backgroundColor: "#9e9e9e", textColor: "black" }, probability: 50 },
+  {
+    option: "1등",
+    style: { backgroundColor: "#FFB6C1", textColor: "black" },
+    probability: 3,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400"
+  },
+  {
+    option: "2등",
+    style: { backgroundColor: "#ADD8E6", textColor: "black" },
+    probability: 7,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520"
+  },
+  {
+    option: "3등",
+    style: { backgroundColor: "#90EE90", textColor: "black" },
+    probability: 15,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580"
+  },
+  {
+    option: "4등",
+    style: { backgroundColor: "#FFFACD", textColor: "black" },
+    probability: 25,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640"
+  },
+  {
+    option: "꽝",
+    style: { backgroundColor: "#D3D3D3", textColor: "black" },
+    probability: 50,
+    imageUrl: ""
+  },
 ];
 
 function App() {
@@ -73,15 +97,7 @@ function App() {
       result: data[prizeNumber]?.option || "Unknown",
     };
 
-    const blob = new Blob([JSON.stringify(resultData, null, 2)], {
-      type: "application/json",
-    });
-    saveAs(blob, "data.json");
-
-    setNoti({
-      type: "success",
-      message: "결과가 저장되었습니다.",
-    });
+    console.log('Result:', resultData);  // 파일 저장 대신 콘솔에 출력
   };
 
   return (
@@ -97,7 +113,6 @@ function App() {
             innerBorderWidth={2}
             radiusLineWidth={3}
             innerRadius={0}
-            backgroundColors={["#F99533", "#24CA69", "#46AEFF", "#9145B7"]}
             fontSize={20}
             onStopSpinning={() => {
               setMustSpin(false);
@@ -105,7 +120,9 @@ function App() {
               saveResult();
             }}
             spinDuration={1}
-          ></Wheel>
+            backgroundColors={data.map((item) => item.style.backgroundColor)}
+            textColors={data.map((item) => item.style.textColor)}
+          />
           <StartButton
             variant="outlined"
             size="large"
@@ -155,6 +172,18 @@ function App() {
           <span style={{ fontSize: "60px" }}>
             {data[prizeNumber] ? data[prizeNumber].option : ""}
           </span>
+          {data[prizeNumber].imageUrl && (
+            <img
+              src={data[prizeNumber].imageUrl}
+              alt={data[prizeNumber].option}
+              style={{
+                marginTop: "20px",
+                maxWidth: "100%",
+                maxHeight: "200px",
+                objectFit: "contain",
+              }}
+            />
+          )}
         </Box>
       </Modal>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import {
   Box,
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import CloseIcon from "@mui/icons-material/Close";
+import { QrReader } from "react-qr-reader";
 import "./App.css";
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
@@ -28,40 +29,7 @@ const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
 }));
 
 const data = [
-  {
-    option: "1등",
-    style: { backgroundColor: "#FFB6C1", textColor: "black" },
-    probability: 3,
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
-  },
-  {
-    option: "2등",
-    style: { backgroundColor: "#ADD8E6", textColor: "black" },
-    probability: 7,
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
-  },
-  {
-    option: "3등",
-    style: { backgroundColor: "#90EE90", textColor: "black" },
-    probability: 15,
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
-  },
-  {
-    option: "4등",
-    style: { backgroundColor: "#FFFACD", textColor: "black" },
-    probability: 25,
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
-  },
-  {
-    option: "꽝",
-    style: { backgroundColor: "#D3D3D3", textColor: "black" },
-    probability: 50,
-    imageUrl: "",
-  },
+  // data definition remains the same
 ];
 
 function App() {
@@ -72,10 +40,61 @@ function App() {
     type: "success" | "error";
     message: string;
   } | null>(null);
+  const [showQR, setShowQR] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function checkCameraPermission() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach(track => track.stop());
+        console.log("Camera permission granted");
+      } catch (err) {
+        console.error("Camera permission error:", err);
+        setCameraError("카메라 권한을 허용해주세요.");
+      }
+    }
+    checkCameraPermission();
+  }, []);
+
+  const handleScan = (result: any) => {
+    if (result) {
+      const scannedText = result.text;
+      setUser(scannedText);
+      console.log("Scanned QR URL:", scannedText);
+      setShowQR(false);
+      handleAuthenticationSuccess();
+    } else if (result === null) {
+      // QR 코드를 찾지 못했을 때의 처리
+      console.log("No QR code found");
+    } else if (result instanceof Error) {
+      // 에러 발생 시 처리
+      console.error("QR Reader error:", result);
+      setCameraError(`QR 스캐너 오류: ${result.message}`);
+      setShowQR(false);
+    }
+  };
 
   const handleSpinClick = () => {
-    if (mustSpin) return;
+    if (mustSpin || showQR) return;
+    setShowQR(true);
+    setTimeout(() => {
+      if (showQR) {
+        setShowQR(false);
+      }
+    }, 30000);
+  };
 
+  const handleAuthenticationSuccess = () => {
+    setNoti({ type: "success", message: "인증이 완료되었습니다" });
+    setTimeout(() => {
+      setNoti(null);
+      startRoulette();
+    }, 1000);
+  };
+
+  const startRoulette = () => {
     const probabilities = data.map((item) => item.probability);
     const totalProbability = probabilities.reduce((acc, curr) => acc + curr, 0);
     const random = Math.random() * totalProbability;
@@ -101,7 +120,7 @@ function App() {
       result: data[prizeNumber]?.option || "Unknown",
     };
 
-    console.log("Result:", resultData); // 파일 저장 대신 콘솔에 출력
+    console.log("Result:", resultData);
   };
 
   const getResultMessage = () => {
@@ -156,22 +175,74 @@ function App() {
           </StartButton>
         </div>
       </div>
+
+      <Modal
+        open={showQR}
+        onClose={() => {
+          setShowQR(false);
+        }}
+        style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <Box
+          style={{
+            width: "80%",
+            height: "80%",
+            backgroundColor: "white",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative", // Ensure children are positioned relative to this container
+          }}
+        >
+          {cameraError ? (
+            <div>{cameraError}</div>
+          ) : (
+            <QrReader
+              onResult={handleScan}
+              constraints={{ facingMode: 'environment' }}
+              containerStyle={{ width: "100%", height: "100%" }} // Full width and height
+              videoStyle={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover", // Ensure video covers container
+              }}
+            />
+          )}
+          <Button
+            onClick={() => setShowQR(false)}
+            style={{
+              marginTop: "10px",
+              position: "absolute",
+              bottom: "10px", // Position button at the bottom
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          >
+            닫기
+          </Button>
+        </Box>
+      </Modal>
+
       <Modal
         open={isResultShow}
         onClose={() => {
           setIsResultShow(false);
         }}
-        style={{}}
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          setIsResultShow(false);
+        }}
       >
         <Box
           style={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "center", // 중앙에 텍스트 위치
+            alignItems: "center",
             textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.8)", // 반투명 배경
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
             width: "70%",
-            height: "70%", // 크기를 더 크게 설정
+            height: "70%",
             maxWidth: "100vw",
             maxHeight: "100vh",
             position: "fixed",
@@ -181,18 +252,6 @@ function App() {
             overflowY: "auto",
           }}
         >
-          <CloseIcon
-            aria-label="close"
-            onClick={() => {
-              setIsResultShow(false);
-            }}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          />
           {data[prizeNumber].imageUrl && (
             <img
               src={data[prizeNumber].imageUrl}
@@ -203,16 +262,16 @@ function App() {
                 left: 0,
                 width: "100%",
                 height: "100%",
-                opacity: 0.5, // 이미지 반투명
-                objectFit: "cover", // 이미지 꽉 채우기
+                opacity: 0.5,
+                objectFit: "cover",
               }}
             />
           )}
           <span
             style={{
               fontSize: "60px",
-              color: "black", // 텍스트 컬러 설정
-              zIndex: 2, // 텍스트가 이미지 위에 나타나도록 설정
+              color: "black",
+              zIndex: 2,
             }}
           >
             {getResultMessage()}

@@ -11,8 +11,10 @@ import {
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { QrReader } from "react-qr-reader";
-import CloseIcon from "@mui/icons-material/Close";
 import "./App.css";
+
+// 임시 데이터베이스 배열
+const qrcodesDB = ["digitaltransformation", "nongshim", "lee", "park", "yoon", "jung", "joe"];
 
 // 데이터 타입 정의
 interface PrizeData {
@@ -88,6 +90,10 @@ function App() {
   const [showQR, setShowQR] = useState(false);
   const [user, setUser] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [result, setResult] = useState<{ date: string; result: string; qrcode?: string }>({
+    date: "",
+    result: "",
+  });
 
   useEffect(() => {
     async function checkCameraPermission() {
@@ -108,8 +114,20 @@ function App() {
       const scannedText = result.text;
       setUser(scannedText);
       console.log("Scanned QR URL:", scannedText);
-      setShowQR(false);
-      handleAuthenticationSuccess();
+
+      // DB 검증 로직
+      if (qrcodesDB.includes(scannedText)) {
+        setResult(prev => ({
+          ...prev,
+          date: new Date().toISOString(),
+          qrcode: scannedText,
+        }));
+        setShowQR(false);
+        handleAuthenticationSuccess();
+      } else {
+        setNoti({ type: "error", message: "없는 정보입니다" });
+        setShowQR(false);
+      }
     } else if (result === null) {
       console.log("No QR code found");
     } else if (result instanceof Error) {
@@ -122,11 +140,6 @@ function App() {
   const handleSpinClick = () => {
     if (mustSpin || showQR) return;
     setShowQR(true);
-    setTimeout(() => {
-      if (showQR) {
-        setShowQR(false);
-      }
-    }, 30000);
   };
 
   const handleAuthenticationSuccess = () => {
@@ -159,7 +172,7 @@ function App() {
 
   const saveResult = () => {
     const resultData = {
-      date: new Date().toISOString(),
+      ...result,
       result: data[prizeNumber]?.option || "Unknown",
     };
 
@@ -228,8 +241,8 @@ function App() {
       >
         <Box
           style={{
-            width: "80%",
-            height: "80%",
+            width: "300px", // 가로 크기 조정
+            height: "300px", // 세로 크기 조정
             backgroundColor: "white",
             display: "flex",
             flexDirection: "column",

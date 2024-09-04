@@ -118,9 +118,12 @@ function App() {
     checkCameraPermission();
   }, []);
 
-  const playAudio = (filePath: string) => {
+  const playAudio = (filePath: string, onEndedCallback?: () => void) => {
     try {
       const audio = new Audio(filePath);
+      if (onEndedCallback) {
+        audio.onended = onEndedCallback;
+      }
       audio.play().catch((error) => {
         console.error("Error playing audio:", error);
       });
@@ -143,6 +146,7 @@ function App() {
           qrcode: scannedText,
         }));
         setShowQR(false);
+        playAudio('/asset/verify.mp3'); // QR 인증 성공 시 음성 재생
         handleAuthenticationSuccess();
       } else {
         playAudio('/asset/retry.mp3'); // 불일치 피드백
@@ -230,9 +234,11 @@ function App() {
     const prizeOption = data[prizeNumber]?.option;
     if (prizeOption) {
       if (prizeOption === "꽝") {
-        playAudio('/asset/fail.mp3'); // 꽝 음성 파일 재생
+        // 꽝: fail1 재생 후 fail 재생
+        playAudio('/asset/fail1.mp3', () => playAudio('/asset/fail.mp3'));
       } else {
-        playAudio('/asset/win.mp3'); // 당첨 음성 파일 재생
+        // 당첨: win1 재생 후 win 재생
+        playAudio('/asset/win1.mp3', () => playAudio('/asset/win.mp3'));
       }
     }
 

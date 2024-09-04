@@ -16,6 +16,14 @@ import "./App.css";
 // 임시 데이터베이스 배열
 const qrcodesDB = ["digitaltransformation", "nongshim", "lee", "park", "yoon", "jung", "joe"];
 
+// 상품 재고 수량 (가정)
+const inventory = {
+  first: 1,  // 1등 상품 수량
+  second: 2, // 2등 상품 수량
+  third: 5,  // 3등 상품 수량
+  fourth: 10 // 4등 상품 수량
+};
+
 // 데이터 타입 정의
 interface PrizeData {
   option: string;
@@ -32,35 +40,35 @@ const data: PrizeData[] = [
   {
     option: "1등",
     style: { backgroundColor: "#FFB6C1", textColor: "black" },
-    probability: 3,
+    probability: inventory.first > 0 ? 3 : 0, // 재고 수량에 따른 확률 설정
     imageUrl:
       "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
   },
   {
     option: "2등",
     style: { backgroundColor: "#ADD8E6", textColor: "black" },
-    probability: 7,
+    probability: inventory.second > 0 ? 7 : 0, // 재고 수량에 따른 확률 설정
     imageUrl:
       "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
   },
   {
     option: "3등",
     style: { backgroundColor: "#90EE90", textColor: "black" },
-    probability: 15,
+    probability: inventory.third > 0 ? 15 : 0, // 재고 수량에 따른 확률 설정
     imageUrl:
       "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
   },
   {
     option: "4등",
     style: { backgroundColor: "#FFFACD", textColor: "black" },
-    probability: 25,
+    probability: inventory.fourth > 0 ? 25 : 0, // 재고 수량에 따른 확률 설정
     imageUrl:
       "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
   },
   {
     option: "꽝",
     style: { backgroundColor: "#D3D3D3", textColor: "black" },
-    probability: 50,
+    probability: 50, // 꽝은 항상 확률 유지
     imageUrl: "",
   },
 ];
@@ -90,6 +98,7 @@ function App() {
   const [showQR, setShowQR] = useState(false);
   const [user, setUser] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [showGif, setShowGif] = useState(false);
   const [result, setResult] = useState<{ date: string; result: string; qrcode?: string }>({
     date: "",
     result: "",
@@ -109,6 +118,17 @@ function App() {
     checkCameraPermission();
   }, []);
 
+  const playAudio = (filePath: string) => {
+    try {
+      const audio = new Audio(filePath);
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    } catch (error) {
+      console.log("Audio file not found or could not be played:", filePath);
+    }
+  };
+
   const handleScan = (result: any) => {
     if (result) {
       const scannedText = result.text;
@@ -125,6 +145,7 @@ function App() {
         setShowQR(false);
         handleAuthenticationSuccess();
       } else {
+        playAudio('/asset/retry.mp3'); // 불일치 피드백
         setNoti({ type: "error", message: "없는 정보입니다" });
         setShowQR(false);
       }
@@ -137,6 +158,32 @@ function App() {
     }
   };
 
+  const startSpeechRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event: any) => {
+      const speechResult = event.results[0][0].transcript.trim();
+      console.log("Speech recognition result:", speechResult);
+
+      if (speechResult.includes("게임시작") || speechResult.includes("시작")) {
+        playAudio('/asset/intro.mp3'); // 게임 시작 안내 음성
+        handleSpinClick();
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+        playAudio('/asset/intro.mp3'); // 게임 시작 안내 음성
+        handleSpinClick();
+    };
+
+    recognition.start();
+  };
+
   const handleSpinClick = () => {
     if (mustSpin || showQR) return;
     setShowQR(true);
@@ -144,7 +191,7 @@ function App() {
 
   const handleAuthenticationSuccess = () => {
     setNoti({ type: "success", message: "인증이 완료되었습니다" });
-    setTimeout(() => {
+    setTimeout(() => {      
       setNoti(null);
       startRoulette();
     }, 1000);
@@ -167,6 +214,7 @@ function App() {
     }
 
     setPrizeNumber(selectedIndex);
+    playAudio('/asset/wheel.mp3'); // 룰렛 소리 파일 경로
     setMustSpin(true);
   };
 
@@ -177,6 +225,27 @@ function App() {
     };
 
     console.log("Result:", resultData);
+
+    // 당첨에 따른 음성 재생
+    const prizeOption = data[prizeNumber]?.option;
+    if (prizeOption) {
+      if (prizeOption === "꽝") {
+        playAudio('/asset/fail.mp3'); // 꽝 음성 파일 재생
+      } else {
+        playAudio('/asset/win.mp3'); // 당첨 음성 파일 재생
+      }
+    }
+
+    if (prizeOption === "1등") {
+      // 1등 당첨 시 GIF 애니메이션 표시
+      setShowGif(true);
+      setTimeout(() => {
+        setShowGif(false);
+        setIsResultShow(true);
+      }, 2000); // 2초간 GIF 표시 후 숨김
+    } else {
+      setIsResultShow(true);
+    }
   };
 
   const getResultMessage = () => {
@@ -215,7 +284,6 @@ function App() {
             fontSize={20}
             onStopSpinning={() => {
               setMustSpin(false);
-              setIsResultShow(true);
               saveResult();
             }}
             spinDuration={1}
@@ -225,9 +293,9 @@ function App() {
           <StartButton
             variant="outlined"
             size="large"
-            onClick={handleSpinClick}
+            onClick={startSpeechRecognition} // 음성 인식 시작
           >
-            시작
+            Start
           </StartButton>
         </div>
       </div>
@@ -280,6 +348,19 @@ function App() {
         </Box>
       </Modal>
 
+      {showGif && (
+        <Modal
+          open={true}
+          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+        >
+          <img
+            src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
+            alt="1등 당첨 축하 GIF"
+            style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
+          />
+        </Modal>
+      )}
+
       <Modal
         open={isResultShow}
         onClose={() => {
@@ -296,9 +377,9 @@ function App() {
             justifyContent: "center",
             alignItems: "center",
             textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            width: "70%",
-            height: "70%",
+            backgroundColor: "rgba(255, 255, 255, 0.7)", // 투명도 30% (0.7)
+            width: "640px", // 크기 조정
+            height: "360px", // 크기 조정
             maxWidth: "100vw",
             maxHeight: "100vh",
             position: "fixed",

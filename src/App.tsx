@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Wheel } from "react-custom-roulette";
 import {
   Box,
@@ -103,6 +103,9 @@ function App() {
     date: "",
     result: "",
   });
+  const [lastGameTime, setLastGameTime] = useState<number | null>(null); // 최근 게임 시간 기록
+
+  const currentAudio = useRef<HTMLAudioElement | null>(null); // 현재 재생 중인 오디오 트래킹
 
   useEffect(() => {
     async function checkCameraPermission() {
@@ -118,9 +121,23 @@ function App() {
     checkCameraPermission();
   }, []);
 
-  const playAudio = (filePath: string, onEndedCallback?: () => void) => {
+  // 오디오 재생 중단 함수
+  const stopCurrentAudio = () => {
+    if (currentAudio.current) {
+      currentAudio.current.pause();
+      currentAudio.current.currentTime = 0;
+    }
+  };
+
+  const playAudio = (filePath: string, onEndedCallback?: () => void, interruptible: boolean = true) => {
+    // 특정 파일(예: 룰렛 소리)은 중단되지 않도록 처리
+    if (interruptible) {
+      stopCurrentAudio(); // 새로운 오디오가 시작되면 기존 오디오 중지
+    }
+
     try {
       const audio = new Audio(filePath);
+      currentAudio.current = audio; // 현재 재생 중인 오디오 업데이트
       if (onEndedCallback) {
         audio.onended = onEndedCallback;
       }
@@ -132,6 +149,14 @@ function App() {
     }
   };
 
+  // 최근 5분 내에 게임이 시작되었는지 체크
+  const isRecentGameStarted = () => {
+    if (!lastGameTime) return false;
+    const now = Date.now();
+    const fiveMinutesInMillis = 5 * 60 * 1000;
+    return now - lastGameTime < fiveMinutesInMillis;
+  };
+
   const handleScan = (result: any) => {
     if (result) {
       const scannedText = result.text;
@@ -139,6 +164,7 @@ function App() {
       console.log("Scanned QR URL:", scannedText);
 
       // DB 검증 로직
+      stopCurrentAudio(); // QR 스캔 시 기존 오디오 중단
       if (qrcodesDB.includes(scannedText)) {
         setResult(prev => ({
           ...prev,
@@ -163,6 +189,12 @@ function App() {
   };
 
   const startSpeechRecognition = () => {
+    if (isRecentGameStarted()) {
+      console.log("최근 5분 내에 게임이 시작되었습니다. 음성 인식을 생략합니다.");
+      handleSpinClick(); // 음성 인식 없이 바로 게임 진행
+      return;
+    }
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = 'ko-KR';
@@ -181,8 +213,8 @@ function App() {
 
     recognition.onerror = (event: any) => {
       console.error("Speech recognition error:", event.error);
-        playAudio('/asset/intro.mp3'); // 게임 시작 안내 음성
-        handleSpinClick();
+      playAudio('/asset/intro.mp3'); // 게임 시작 안내 음성
+      handleSpinClick();
     };
 
     recognition.start();
@@ -195,7 +227,7 @@ function App() {
 
   const handleAuthenticationSuccess = () => {
     setNoti({ type: "success", message: "인증이 완료되었습니다" });
-    setTimeout(() => {      
+    setTimeout(() => {
       setNoti(null);
       startRoulette();
     }, 1000);
@@ -218,8 +250,9 @@ function App() {
     }
 
     setPrizeNumber(selectedIndex);
-    playAudio('/asset/wheel.mp3'); // 룰렛 소리 파일 경로
+    playAudio('/asset/wheel.mp3', undefined, false); // 룰렛 소리 파일: interruptible=false로 중단되지 않음
     setMustSpin(true);
+    setLastGameTime(Date.now()); // 게임 시작 시간을 현재로 기록
   };
 
   const saveResult = () => {
@@ -234,10 +267,10 @@ function App() {
     const prizeOption = data[prizeNumber]?.option;
     if (prizeOption) {
       if (prizeOption === "꽝") {
-        // 꽝: fail1 재생 후 fail 재생
+        // 꽝: fail1을 3초만 재생 후 fail 재생
         playAudio('/asset/fail1.mp3', () => playAudio('/asset/fail.mp3'));
       } else {
-        // 당첨: win1 재생 후 win 재생
+        // 당첨: win1을 3초만 재생 후 win 재생
         playAudio('/asset/win1.mp3', () => playAudio('/asset/win.mp3'));
       }
     }
@@ -383,7 +416,7 @@ function App() {
             justifyContent: "center",
             alignItems: "center",
             textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.7)", // 투명도 30% (0.7)
+            backgroundColor: "rgba(255, 255, 255, 0.9)", // 투명도 10% (0.9)
             width: "640px", // 크기 조정
             height: "360px", // 크기 조정
             maxWidth: "100vw",

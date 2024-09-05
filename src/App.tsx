@@ -149,6 +149,33 @@ function App() {
     }
   };
 
+  const playAudioWithDuration = (filePath: string, duration: number, onEndedCallback?: () => void, interruptible: boolean = true) => {
+    // 특정 파일(예: 룰렛 소리)은 중단되지 않도록 처리
+    if (interruptible) {
+      stopCurrentAudio(); // 새로운 오디오가 시작되면 기존 오디오 중지
+    }
+  
+    try {
+      const audio = new Audio(filePath);
+      currentAudio.current = audio; // 현재 재생 중인 오디오 업데이트
+  
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+  
+      // 주어진 duration (밀리초) 후에 오디오 중단 및 콜백 실행
+      setTimeout(() => {
+        stopCurrentAudio();
+        if (onEndedCallback) {
+          onEndedCallback();
+        }
+      }, duration);
+    } catch (error) {
+      console.log("Audio file not found or could not be played:", filePath);
+    }
+  };
+
+  
   // 최근 5분 내에 게임이 시작되었는지 체크
   const isRecentGameStarted = () => {
     if (!lastGameTime) return false;
@@ -268,10 +295,10 @@ function App() {
     if (prizeOption) {
       if (prizeOption === "꽝") {
         // 꽝: fail1을 3초만 재생 후 fail 재생
-        playAudio('/asset/fail1.mp3', () => playAudio('/asset/fail.mp3'));
+        playAudioWithDuration('/asset/fail1.mp3', 3000, () => playAudio('/asset/fail.mp3'));
       } else {
         // 당첨: win1을 3초만 재생 후 win 재생
-        playAudio('/asset/win1.mp3', () => playAudio('/asset/win.mp3'));
+        playAudioWithDuration('/asset/win1.mp3', 3000, () => playAudio('/asset/win.mp3'));
       }
     }
 

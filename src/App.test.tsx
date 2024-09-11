@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios"; // axios 추가
 import { Wheel } from "react-custom-roulette";
 import {
   Box,
@@ -14,7 +13,17 @@ import { red } from "@mui/material/colors";
 import { QrReader } from "react-qr-reader";
 import "./App.css";
 
-// 상품 재고 수량 및 QR코드 데이터는 서버에서 관리
+// 임시 데이터베이스 배열
+const qrcodesDB = ["digitaltransformation", "nongshim", "lee", "park", "yoon", "jung", "joe"];
+
+// 상품 재고 수량 (가정)
+const inventory = {
+  first: 1,  // 1등 상품 수량
+  second: 2, // 2등 상품 수량
+  third: 5,  // 3등 상품 수량
+  fourth: 10 // 4등 상품 수량
+};
+
 // 데이터 타입 정의
 interface PrizeData {
   option: string;
@@ -26,13 +35,74 @@ interface PrizeData {
   imageUrl: string;
 }
 
-// 초기 상태로 빈 배열 설정
+// 기존 데이터 배열 5개였던 룰렛 데이터를 10개로 확장합니다.
 const data: PrizeData[] = [
-  { option: "", style: { backgroundColor: "", textColor: "" }, probability: 0, imageUrl: "" }
+  {
+    option: "1등",
+    style: { backgroundColor: "#FFD700", textColor: "black" }, // Gold for 1st prize
+    probability: inventory.first > 0 ? 3 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
+  },
+  {
+    option: "2등",
+    style: { backgroundColor: "#FF4500", textColor: "white" }, // Bright Orange for 2nd prize
+    probability: inventory.second > 0 ? 7 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
+  },
+  {
+    option: "3등",
+    style: { backgroundColor: "#32CD32", textColor: "white" }, // Lime Green for 3rd prize
+    probability: inventory.third > 0 ? 15 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
+  },
+  {
+    option: "4등",
+    style: { backgroundColor: "#000000", textColor: "white" }, // Black for 4th prize
+    probability: inventory.fourth > 0 ? 25 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+  },
+  {
+    option: "꽝",
+    style: { backgroundColor: "#8B0000", textColor: "white" }, // Dark Red for 'Lose'
+    probability: 50,
+    imageUrl: "",
+  },
+  // 기존의 5개 데이터 복사하여 10개로 확장
+  {
+    option: "1등",
+    style: { backgroundColor: "#FFD700", textColor: "black" }, // Duplicate for balance
+    probability: inventory.first > 0 ? 3 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
+  },
+  {
+    option: "2등",
+    style: { backgroundColor: "#FF4500", textColor: "white" }, // Duplicate for balance
+    probability: inventory.second > 0 ? 7 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
+  },
+  {
+    option: "3등",
+    style: { backgroundColor: "#32CD32", textColor: "white" }, // Duplicate for balance
+    probability: inventory.third > 0 ? 15 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
+  },
+  {
+    option: "4등",
+    style: { backgroundColor: "#000000", textColor: "white" }, // Duplicate for balance
+    probability: inventory.fourth > 0 ? 25 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+  },
+  {
+    option: "꽝",
+    style: { backgroundColor: "#8B0000", textColor: "white" }, // Duplicate for balance
+    probability: 50,
+    imageUrl: "",
+  },
 ];
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
   marginTop: "20px",
+  marginBottom: "50px", // 버튼과 GIF가 겹치지 않도록 추가
   width: "200px",
   fontSize: 20,
   color: "#fff",
@@ -61,177 +131,36 @@ function App() {
     date: "",
     result: "",
   });
-  const [lastGameTime, setLastGameTime] = useState<number | null>(null); // 최근 게임 시간 기록
-  const [inventory, setInventory] = useState({
-    first: 0,
-    second: 0,
-    third: 0,
-    fourth: 0,
-  }); // 상품 재고 관리
-  const [prizeData, setPrizeData] = useState<PrizeData[]>([]); // 서버에서 받아올 상품 데이터
 
   const currentAudio = useRef<HTMLAudioElement | null>(null); // 현재 재생 중인 오디오 트래킹
 
-  // SSL 검증을 무시하는 axios 인스턴스 생성
-  const axiosInstance = axios.create({
-    baseURL: "https://18.188.19.234:443",  // 서버 주소
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    httpsAgent: new (require('https')).Agent({  
-      rejectUnauthorized: false  // SSL 검증을 무시합니다.
-    })
-  });
-  
-  useEffect(() => {
-    // 서버에서 상품 재고 및 상품 데이터 불러오기
-    axiosInstance
-      .get("/api/inventory")
-      .then((response) => {
-        setInventory(response.data); // 상품 재고 데이터 설정
-        setPrizeData([
-          {
-            option: "1등",
-            style: { backgroundColor: "#FFB6C1", textColor: "black" },
-            probability: response.data.first > 0 ? 3 : 0,
-            imageUrl:
-              "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
-          },
-          {
-            option: "2등",
-            style: { backgroundColor: "#ADD8E6", textColor: "black" },
-            probability: response.data.second > 0 ? 7 : 0,
-            imageUrl:
-              "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
-          },
-          {
-            option: "3등",
-            style: { backgroundColor: "#90EE90", textColor: "black" },
-            probability: response.data.third > 0 ? 15 : 0,
-            imageUrl:
-              "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
-          },
-          {
-            option: "4등",
-            style: { backgroundColor: "#FFFACD", textColor: "black" },
-            probability: response.data.fourth > 0 ? 25 : 0,
-            imageUrl:
-              "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
-          },
-          {
-            option: "꽝",
-            style: { backgroundColor: "#D3D3D3", textColor: "black" },
-            probability: 50,
-            imageUrl: "",
-          },
-        ]); // 서버에서 받은 데이터를 prizeData에 저장
-      })
-      .catch((error) => {
-        console.error("상품 데이터를 불러오는데 오류가 발생했습니다.", error);
-      });
-  }, []);
-
-  const stopCurrentAudio = () => {
-    if (currentAudio.current) {
-      currentAudio.current.pause();
-      currentAudio.current.currentTime = 0;
-    }
-  };
-
-  const playAudio = (filePath: string, onEndedCallback?: () => void, interruptible: boolean = true) => {
-    // 특정 파일(예: 룰렛 소리)은 중단되지 않도록 처리
-    if (interruptible) {
-      stopCurrentAudio(); // 새로운 오디오가 시작되면 기존 오디오 중지
-    }
-
-    try {
-      const audio = new Audio(filePath);
-      currentAudio.current = audio; // 현재 재생 중인 오디오 업데이트
-      if (onEndedCallback) {
-        audio.onended = onEndedCallback;
-      }
-      audio.play().catch((error) => {
-        console.error("Error playing audio:", error);
-      });
-    } catch (error) {
-      console.log("Audio file not found or could not be played:", filePath);
-    }
-  };
-
+  // handleScan 함수 추가
   const handleScan = (result: any) => {
     if (result) {
-      const scannedText = result.text;
+      const scannedText = result?.text || "";  // QR 코드에서 추출한 텍스트
       setUser(scannedText);
+      console.log("Scanned QR URL:", scannedText);
 
-      // QR 코드 검증을 서버에 요청
-      axiosInstance
-        .post("/api/validateQR", { qrcode: scannedText })
-        .then((response) => {
-          if (response.data.success) {
-            setResult((prev) => ({
-              ...prev,
-              date: new Date().toISOString(),
-              qrcode: scannedText,
-            }));
-            setShowQR(false);
-            playAudio("/asset/verify.mp3"); // QR 인증 성공 시 음성 재생
-            handleAuthenticationSuccess();
-          } else {
-            playAudio("/asset/retry.mp3"); // 불일치 피드백
-            setNoti({ type: "error", message: response.data.message });
-            setShowQR(false);
-          }
-        })
-        .catch((error) => {
-          console.error("QR 검증 오류: ", error);
-          setNoti({ type: "error", message: "QR 검증 중 오류가 발생했습니다." });
-          setShowQR(false);
-        });
-    } else if (result === null) {
-      console.log("No QR code found");
-    } else if (result instanceof Error) {
-      console.error("QR Reader error:", result);
-      setCameraError(`QR 스캐너 오류: ${result.message}`);
-      setShowQR(false);
-    }
-  };
-
-  // 최근 5분 내에 게임이 시작되었는지 체크하는 함수
-  const isRecentGameStarted = () => {
-    if (!lastGameTime) return false;
-    const now = Date.now();
-    const fiveMinutesInMillis = 5 * 60 * 1000;
-    return now - lastGameTime < fiveMinutesInMillis;
-  };
-
-  const startSpeechRecognition = () => {
-    if (isRecentGameStarted()) {
-      console.log("최근 5분 내에 게임이 시작되었습니다. 음성 인식을 생략합니다.");
-      handleSpinClick();
-      return;
-    }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = "ko-KR";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onresult = (event: any) => {
-      const speechResult = event.results[0][0].transcript.trim();
-      if (speechResult.includes("게임시작") || speechResult.includes("시작")) {
-        playAudio("/asset/intro.mp3");
-        handleSpinClick();
+      // QR 코드 데이터베이스와 비교
+      if (qrcodesDB.includes(scannedText)) {
+        setResult(prev => ({
+          ...prev,
+          date: new Date().toISOString(),
+          qrcode: scannedText,
+        }));
+        setShowQR(false);  // QR 스캔 모달 닫기
+        setNoti({ type: "success", message: "인증이 완료되었습니다" });
+        setTimeout(() => {
+          setNoti(null);
+          startRoulette();  // 룰렛 시작
+        }, 1000);
+      } else {
+        setNoti({ type: "error", message: "없는 정보입니다" });
+        setShowQR(false);
       }
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error("Speech recognition error:", event.error);
-      playAudio("/asset/intro.mp3");
-      handleSpinClick();
-    };
-
-    recognition.start();
+    } else {
+      console.log("No QR code found");
+    }
   };
 
   const handleSpinClick = () => {
@@ -239,16 +168,8 @@ function App() {
     setShowQR(true);
   };
 
-  const handleAuthenticationSuccess = () => {
-    setNoti({ type: "success", message: "인증이 완료되었습니다" });
-    setTimeout(() => {
-      setNoti(null);
-      startRoulette();
-    }, 1000);
-  };
-
   const startRoulette = () => {
-    const probabilities = prizeData.map((item) => item.probability);
+    const probabilities = data.map((item) => item.probability);
     const totalProbability = probabilities.reduce((acc, curr) => acc + curr, 0);
     const random = Math.random() * totalProbability;
 
@@ -264,76 +185,52 @@ function App() {
     }
 
     setPrizeNumber(selectedIndex);
-    playAudio("/asset/wheel.mp3", undefined, false);
     setMustSpin(true);
-    setLastGameTime(Date.now());
   };
 
   const saveResult = () => {
     const resultData = {
       ...result,
-      result: prizeData[prizeNumber]?.option || "Unknown",
+      result: data[prizeNumber]?.option || "Unknown",
     };
 
-    // 결과 서버에 저장
-    axiosInstance
-      .post("/api/result", { result: resultData })
-      .then(() => {
-        console.log("결과가 성공적으로 저장되었습니다.");
-      })
-      .catch((error) => {
-        console.error("결과 저장 중 오류가 발생했습니다.", error);
-      });
+    console.log("Result:", resultData);
 
-    // 당첨에 따른 음성 재생
-    const prizeOption = prizeData[prizeNumber]?.option;
-    if (prizeOption) {
-      if (prizeOption === "꽝") {
-        playAudio("/asset/fail1.mp3", () => playAudio("/asset/fail.mp3"));
-      } else {
-        playAudio("/asset/win1.mp3", () => playAudio("/asset/win.mp3"));
-      }
-    }
-
-    if (prizeOption === "1등") {
+    if (data[prizeNumber]?.option === "1등") {
       setShowGif(true);
       setTimeout(() => {
         setShowGif(false);
         setIsResultShow(true);
-      }, 2000);
+      }, 2000); // 2초간 GIF 표시 후 숨김
     } else {
       setIsResultShow(true);
     }
   };
 
-    const getResultMessage = () => {
-      if (!prizeData[prizeNumber]) return '';  // 조건 추가
-    
-      switch (prizeData[prizeNumber].option) {
-        case "1등":
-          return "🏆1등 당첨🎉";
-        case "2등":
-          return "🥇2등 당첨🎁";
-        case "3등":
-          return "🥈3등 당첨👏";
-        case "4등":
-          return "🥉4등 당첨😉";
-        case "꽝":
-          return "🧨꽝💥";
-        default:
-          return "";
-      }
-};
-
+  const getResultMessage = () => {
+    switch (data[prizeNumber].option) {
+      case "1등":
+        return "🏆1등 당첨🎉";
+      case "2등":
+        return "🥇2등 당첨🎁";
+      case "3등":
+        return "🥈3등 당첨👏";
+      case "4등":
+        return "🥉4등 당첨😉";
+      case "꽝":
+        return "🧨꽝💥";
+      default:
+        return "";
+    }
+  };
 
   return (
     <>
       <div className="roulette-layout">
-        <div style={{ textAlign: "center" }}>
-          <h1>룰렛</h1>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>        
           <Wheel
             mustStartSpinning={mustSpin}
-            data={prizeData.map((item) => ({
+            data={data.map((item) => ({
               option: item.option,
               style: item.style,
             }))}
@@ -348,15 +245,21 @@ function App() {
               saveResult();
             }}
             spinDuration={1}
-            backgroundColors={prizeData.map((item) => item.style.backgroundColor)}
-            textColors={prizeData.map((item) => item.style.textColor)}
+            backgroundColors={data.map((item) => item.style.backgroundColor)}
+            textColors={data.map((item) => item.style.textColor)}
           />
-          <StartButton variant="outlined" size="large" onClick={startSpeechRecognition}>
+          <StartButton variant="outlined" size="large" onClick={handleSpinClick}>
             Start
           </StartButton>
         </div>
+
+        {/* GIF at the bottom */}
+        <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
+          <img src="https://media.tenor.com/WUWygJ0Fwz8AAAAM/jago33-slot-machine.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
+        </div>
       </div>
 
+      {/* 유지해야 할 Modal 코드 추가 */}
       <Modal
         open={showQR}
         onClose={() => {
@@ -366,8 +269,8 @@ function App() {
       >
         <Box
           style={{
-            width: "300px",
-            height: "300px",
+            width: "300px", // 가로 크기 조정
+            height: "300px", // 세로 크기 조정
             backgroundColor: "white",
             display: "flex",
             flexDirection: "column",
@@ -381,7 +284,7 @@ function App() {
           ) : (
             <QrReader
               onResult={handleScan}
-              constraints={{ facingMode: "environment" }}
+              constraints={{ facingMode: 'environment' }}
               containerStyle={{ width: "100%", height: "100%" }}
               videoStyle={{
                 width: "100%",
@@ -406,7 +309,10 @@ function App() {
       </Modal>
 
       {showGif && (
-        <Modal open={true} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Modal
+          open={true}
+          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+        >
           <img
             src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
             alt="1등 당첨 축하 GIF"
@@ -431,9 +337,9 @@ function App() {
             justifyContent: "center",
             alignItems: "center",
             textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            width: "640px",
-            height: "360px",
+            backgroundColor: "rgba(255, 255, 255, 0.9)", // 투명도 10% (0.9)
+            width: "640px", // 크기 조정
+            height: "360px", // 크기 조정
             maxWidth: "100vw",
             maxHeight: "100vh",
             position: "fixed",
@@ -443,10 +349,10 @@ function App() {
             overflowY: "auto",
           }}
         >
-          {prizeData[prizeNumber] && prizeData[prizeNumber].imageUrl && (
+          {data[prizeNumber].imageUrl && (
             <img
-              src={prizeData[prizeNumber].imageUrl}
-              alt={prizeData[prizeNumber].option}
+              src={data[prizeNumber].imageUrl}
+              alt={data[prizeNumber].option}
               style={{
                 position: "absolute",
                 top: 0,
@@ -458,7 +364,6 @@ function App() {
               }}
             />
           )}
-
           <span
             style={{
               fontSize: "60px",

@@ -253,10 +253,10 @@ function App() {
               style: item.style,
             }))}
             prizeNumber={prizeNumber}
-            outerBorderWidth={0}
-            innerBorderWidth={0}
-            radiusLineWidth={0}
-            innerRadius={0}
+            outerBorderWidth={0.1}
+            innerBorderWidth={0.1}
+            radiusLineWidth={0.1}
+            innerRadius={1}
             fontSize={20}
             onStopSpinning={() => {
               setMustSpin(false);

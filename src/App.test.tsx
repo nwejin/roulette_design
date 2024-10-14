@@ -19,7 +19,7 @@ interface PrizeData {
   style: {
     backgroundColor: string;
     textColor: string;
-    textShadow?: string; // Optional textShadow property
+    textShadow: string; // Optional textShadow property
   };
   probability: number;
   imageUrl: string;

@@ -1,27 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Wheel } from "react-custom-roulette";
-import {
-  Box,
-  Button,
-  ButtonProps,
-  Modal,
-  Snackbar,
-  Alert,
-  styled,
-} from "@mui/material";
+import { Box, Button, ButtonProps, Modal, styled } from "@mui/material";
 import { red } from "@mui/material/colors";
-import { QrReader } from "react-qr-reader";
 import "./App.css";
-
-// 임시 데이터베이스 배열
-const qrcodesDB = ["digitaltransformation", "nongshim", "lee", "park", "yoon", "jung", "joe"];
 
 // 상품 재고 수량 (가정)
 const inventory = {
-  first: 1,  // 1등 상품 수량
-  second: 2, // 2등 상품 수량
-  third: 5,  // 3등 상품 수량
-  fourth: 10 // 4등 상품 수량
+  first: 1,   // 1등 상품 수량
+  second: 2,  // 2등 상품 수량
+  third: 5,   // 3등 상품 수량
+  fourth: 10, // 4등 상품 수량
+  fifth: 15,  // 5등 상품 수량
 };
 
 // 데이터 타입 정의
@@ -35,67 +24,79 @@ interface PrizeData {
   imageUrl: string;
 }
 
-// 기존 데이터 배열 5개였던 룰렛 데이터를 10개로 확장합니다.
+// 데이터 배열 수정 (1~5등, 꽝으로 구성)
 const data: PrizeData[] = [
   {
     option: "1등",
     style: { backgroundColor: "#FFD700", textColor: "black" }, // Gold for 1st prize
-    probability: inventory.first > 0 ? 3 : 0,
+    probability: inventory.first > 0 ? 2 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
   },
   {
     option: "2등",
     style: { backgroundColor: "#FF4500", textColor: "white" }, // Bright Orange for 2nd prize
-    probability: inventory.second > 0 ? 7 : 0,
+    probability: inventory.second > 0 ? 5 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
   },
   {
     option: "3등",
     style: { backgroundColor: "#32CD32", textColor: "white" }, // Lime Green for 3rd prize
-    probability: inventory.third > 0 ? 15 : 0,
+    probability: inventory.third > 0 ? 10 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
   },
   {
     option: "4등",
     style: { backgroundColor: "#000000", textColor: "white" }, // Black for 4th prize
-    probability: inventory.fourth > 0 ? 25 : 0,
+    probability: inventory.fourth > 0 ? 20 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+  },
+  {
+    option: "5등",
+    style: { backgroundColor: "#1E90FF", textColor: "white" }, // Blue for 5th prize
+    probability: inventory.fifth > 0 ? 23 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640", // 4등과 같은 이미지 사용
   },
   {
     option: "꽝",
     style: { backgroundColor: "#8B0000", textColor: "white" }, // Dark Red for 'Lose'
-    probability: 50,
+    probability: 40,
     imageUrl: "",
   },
-  // 기존의 5개 데이터 복사하여 10개로 확장
+  // 데이터 복사하여 룰렛을 균형있게 만듭니다.
   {
     option: "1등",
-    style: { backgroundColor: "#FFD700", textColor: "black" }, // Duplicate for balance
-    probability: inventory.first > 0 ? 3 : 0,
+    style: { backgroundColor: "#FFD700", textColor: "black" },
+    probability: inventory.first > 0 ? 2 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
   },
   {
     option: "2등",
-    style: { backgroundColor: "#FF4500", textColor: "white" }, // Duplicate for balance
-    probability: inventory.second > 0 ? 7 : 0,
+    style: { backgroundColor: "#FF4500", textColor: "white" },
+    probability: inventory.second > 0 ? 5 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
   },
   {
     option: "3등",
-    style: { backgroundColor: "#32CD32", textColor: "white" }, // Duplicate for balance
-    probability: inventory.third > 0 ? 15 : 0,
+    style: { backgroundColor: "#32CD32", textColor: "white" },
+    probability: inventory.third > 0 ? 10 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
   },
   {
     option: "4등",
-    style: { backgroundColor: "#000000", textColor: "white" }, // Duplicate for balance
-    probability: inventory.fourth > 0 ? 25 : 0,
+    style: { backgroundColor: "#000000", textColor: "white" },
+    probability: inventory.fourth > 0 ? 20 : 0,
+    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+  },
+  {
+    option: "5등",
+    style: { backgroundColor: "#1E90FF", textColor: "white" },
+    probability: inventory.fifth > 0 ? 23 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
   },
   {
     option: "꽝",
-    style: { backgroundColor: "#8B0000", textColor: "white" }, // Duplicate for balance
-    probability: 50,
+    style: { backgroundColor: "#8B0000", textColor: "white" },
+    probability: 40,
     imageUrl: "",
   },
 ];
@@ -119,53 +120,17 @@ function App() {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [isResultShow, setIsResultShow] = useState<boolean>(false);
-  const [noti, setNoti] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-  const [showQR, setShowQR] = useState(false);
-  const [user, setUser] = useState<string | null>(null);
-  const [cameraError, setCameraError] = useState<string | null>(null);
   const [showGif, setShowGif] = useState(false);
-  const [result, setResult] = useState<{ date: string; result: string; qrcode?: string }>({
+  const [result, setResult] = useState<{ date: string; result: string }>({
     date: "",
     result: "",
   });
 
   const currentAudio = useRef<HTMLAudioElement | null>(null); // 현재 재생 중인 오디오 트래킹
 
-  // handleScan 함수 추가
-  const handleScan = (result: any) => {
-    if (result) {
-      const scannedText = result?.text || "";  // QR 코드에서 추출한 텍스트
-      setUser(scannedText);
-      console.log("Scanned QR URL:", scannedText);
-
-      // QR 코드 데이터베이스와 비교
-      if (qrcodesDB.includes(scannedText)) {
-        setResult(prev => ({
-          ...prev,
-          date: new Date().toISOString(),
-          qrcode: scannedText,
-        }));
-        setShowQR(false);  // QR 스캔 모달 닫기
-        setNoti({ type: "success", message: "인증이 완료되었습니다" });
-        setTimeout(() => {
-          setNoti(null);
-          startRoulette();  // 룰렛 시작
-        }, 1000);
-      } else {
-        setNoti({ type: "error", message: "없는 정보입니다" });
-        setShowQR(false);
-      }
-    } else {
-      console.log("No QR code found");
-    }
-  };
-
   const handleSpinClick = () => {
-    if (mustSpin || showQR) return;
-    setShowQR(true);
+    if (mustSpin) return;
+    startRoulette();
   };
 
   const startRoulette = () => {
@@ -191,6 +156,7 @@ function App() {
   const saveResult = () => {
     const resultData = {
       ...result,
+      date: new Date().toISOString(),
       result: data[prizeNumber]?.option || "Unknown",
     };
 
@@ -217,6 +183,8 @@ function App() {
         return "🥈3등 당첨👏";
       case "4등":
         return "🥉4등 당첨😉";
+      case "5등":
+        return "🎖5등 당첨🙂";
       case "꽝":
         return "🧨꽝💥";
       default:
@@ -258,55 +226,6 @@ function App() {
           <img src="https://media.tenor.com/WUWygJ0Fwz8AAAAM/jago33-slot-machine.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
         </div>
       </div>
-
-      {/* 유지해야 할 Modal 코드 추가 */}
-      <Modal
-        open={showQR}
-        onClose={() => {
-          setShowQR(false);
-        }}
-        style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-        <Box
-          style={{
-            width: "300px", // 가로 크기 조정
-            height: "300px", // 세로 크기 조정
-            backgroundColor: "white",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
-          }}
-        >
-          {cameraError ? (
-            <div>{cameraError}</div>
-          ) : (
-            <QrReader
-              onResult={handleScan}
-              constraints={{ facingMode: 'environment' }}
-              containerStyle={{ width: "100%", height: "100%" }}
-              videoStyle={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          )}
-          <Button
-            onClick={() => setShowQR(false)}
-            style={{
-              marginTop: "10px",
-              position: "absolute",
-              bottom: "10px",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          >
-            닫기
-          </Button>
-        </Box>
-      </Modal>
 
       {showGif && (
         <Modal
@@ -375,18 +294,6 @@ function App() {
           </span>
         </Box>
       </Modal>
-
-      <Snackbar
-        open={!!noti}
-        onClose={() => {
-          setNoti(null);
-        }}
-        autoHideDuration={3000}
-      >
-        <Alert severity={noti?.type} variant="filled" sx={{ width: "100%" }}>
-          {noti?.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

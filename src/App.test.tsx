@@ -28,78 +28,127 @@ interface PrizeData {
 const data: PrizeData[] = [
   {
     option: "1등",
-    style: { backgroundColor: "#FFD700", textColor: "black" }, // Gold for 1st prize
+    style: {
+      backgroundColor: "#9ccefd",
+      textColor: "black",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    }, // Gold for 1st prize
     probability: inventory.first > 0 ? 2 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
   },
   {
     option: "2등",
-    style: { backgroundColor: "#FF4500", textColor: "white" }, // Bright Orange for 2nd prize
+    style: {
+      backgroundColor: "#ee024a",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    }, // Bright Orange for 2nd prize
     probability: inventory.second > 0 ? 5 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
   },
   {
     option: "3등",
-    style: { backgroundColor: "#32CD32", textColor: "white" }, // Lime Green for 3rd prize
+    style: {
+      backgroundColor: "#b9dc88",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    }, // Lime Green for 3rd prize
     probability: inventory.third > 0 ? 10 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
   },
   {
     option: "4등",
-    style: { backgroundColor: "#000000", textColor: "white" }, // Black for 4th prize
+    style: {
+      backgroundColor: "#02dccb",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    }, // Black for 4th prize
     probability: inventory.fourth > 0 ? 20 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
   },
   {
     option: "5등",
-    style: { backgroundColor: "#1E90FF", textColor: "white" }, // Blue for 5th prize
+    style: {
+      backgroundColor: "#00cfff",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    }, // Blue for 5th prize
     probability: inventory.fifth > 0 ? 23 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640", // 4등과 같은 이미지 사용
   },
   {
     option: "꽝",
-    style: { backgroundColor: "#8B0000", textColor: "white" }, // Dark Red for 'Lose'
-    probability: 40,
+    style: {
+      backgroundColor: "#fe8dcb",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    }, // Dark Red for 'Lose'
+    probability: 100,
     imageUrl: "",
   },
   // 데이터 복사하여 룰렛을 균형있게 만듭니다.
   {
     option: "1등",
-    style: { backgroundColor: "#FFD700", textColor: "black" },
+    style: {
+      backgroundColor: "#9ccefd",
+      textColor: "black",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    },
     probability: inventory.first > 0 ? 2 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
   },
   {
     option: "2등",
-    style: { backgroundColor: "#FF4500", textColor: "white" },
+    style: {
+      backgroundColor: "#ee024a",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    },
     probability: inventory.second > 0 ? 5 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
   },
   {
     option: "3등",
-    style: { backgroundColor: "#32CD32", textColor: "white" },
+    style: {
+      backgroundColor: "#b9dc88",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    },
     probability: inventory.third > 0 ? 10 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
   },
   {
     option: "4등",
-    style: { backgroundColor: "#000000", textColor: "white" },
+    style: {
+      backgroundColor: "#02dccb",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    },
     probability: inventory.fourth > 0 ? 20 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
   },
   {
     option: "5등",
-    style: { backgroundColor: "#1E90FF", textColor: "white" },
+    style: {
+      backgroundColor: "#00cfff",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    },
     probability: inventory.fifth > 0 ? 23 : 0,
     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
   },
   {
     option: "꽝",
-    style: { backgroundColor: "#8B0000", textColor: "white" },
-    probability: 40,
+    style: {
+      backgroundColor: "#fe8dcb",
+      textColor: "white",
+      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+    },
+    probability: 100,
     imageUrl: "",
   },
 ];
+
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
   marginTop: "20px",
@@ -203,9 +252,9 @@ function App() {
               style: item.style,
             }))}
             prizeNumber={prizeNumber}
-            outerBorderWidth={2}
-            innerBorderWidth={2}
-            radiusLineWidth={3}
+            outerBorderWidth={0}
+            innerBorderWidth={0}
+            radiusLineWidth={0}
             innerRadius={0}
             fontSize={20}
             onStopSpinning={() => {

@@ -253,9 +253,9 @@ function App() {
               style: item.style,
             }))}
             prizeNumber={prizeNumber}
-            outerBorderWidth={0.1}
-            innerBorderWidth={0.1}
-            radiusLineWidth={0.1}
+            outerBorderWidth={1}
+            innerBorderWidth={1}
+            radiusLineWidth={1}
             innerRadius={1}
             fontSize={20}
             onStopSpinning={() => {

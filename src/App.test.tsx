@@ -272,8 +272,9 @@ function App() {
         </div>
 
         <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
-          <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
+          <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "auto", height: "auto" }} />
         </div>
+
 
         {showGif && (
           <Modal

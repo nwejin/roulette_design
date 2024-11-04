@@ -1,12 +1,37 @@
+/* Global settings to ensure layout stability and no horizontal overflow */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* General box-sizing for all elements */
+* {
+  box-sizing: border-box;
+}
+
+/* Roulette layout, keeping its size fixed and centered */
+.roulette-layout {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%; /* Full width */
+  background-image: url('https://cdna.artstation.com/p/assets/images/images/020/198/804/large/eugenia-vorontsova-promo-bg1.jpg?1566817489');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  overflow: hidden; /* Prevent any overflow */
+}
+
+/* Ensuring the roulette element doesn't grow beyond a specific size */
 .bhdLno {
   max-width: 670px !important;
   max-height: 670px !important;
-}
-
-.roulette-layout {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
 }
 
 @media (max-width: 800px) {
@@ -16,15 +41,59 @@
   }
 }
 
+
+
+/* Menu layout styles */
 .menu-layout {
   display: flex;
   flex-direction: column;
   text-align: center;
   width: 350px;
+  margin: 0 auto;
 }
 
 @media (max-width: 800px) {
   .menu-layout {
     width: 100%;
   }
+}
+
+
+/* Button styling */
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+
+/* Controls layout */
+#controls {
+  background-color: rgba(255, 255, 255, 0.9);
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 30px;
+}
+
+#controls label {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+#controls label input {
+  margin-right: 5px;
+}
+
+input[type="checkbox"] {
+  width: 40px;
+  height: 40px;
+}
+
+/* Jackpot display */
+#jackpot {
+  color: #d5ad6d;
+  font-size: 40px;
+  text-align: center;
 }

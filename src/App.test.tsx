@@ -242,109 +242,105 @@ function App() {
     }
   };
 
-return (
-  <>
-    <div className="roulette-layout">
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>        
-        <Wheel
-          mustStartSpinning={mustSpin}
-          data={data.map((item) => ({
-            option: item.option,
-            style: item.style,
-          }))}
-          prizeNumber={prizeNumber}
-          outerBorderWidth={1}
-          innerBorderWidth={1}
-          radiusLineWidth={1}
-          innerRadius={1}
-          fontSize={20}
-          onStopSpinning={() => {
-            setMustSpin(false);
-            saveResult();
-          }}
-          spinDuration={1}
-          backgroundColors={data.map((item) => item.style.backgroundColor)}
-          textColors={data.map((item) => item.style.textColor)}
-        />
-        <StartButton variant="outlined" size="large" onClick={handleSpinClick}>
-          Start
-        </StartButton>
-      </div>
-
-      {/* GIF at the bottom */}
-      <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
-        <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
-      </div>
-
-      {showGif && (
-        <Modal
-          open={true}
-          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-        >
-          <img
-            src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
-            alt="1등 당첨 축하 GIF"
-            style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
+  return (
+    <>
+      <div className="roulette-layout">
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>        
+          <Wheel
+            mustStartSpinning={mustSpin}
+            data={data.map((item) => ({
+              option: item.option,
+              style: item.style,
+            }))}
+            prizeNumber={prizeNumber}
+            outerBorderWidth={1}
+            innerBorderWidth={1}
+            radiusLineWidth={1}
+            innerRadius={1}
+            fontSize={20}
+            onStopSpinning={() => {
+              setMustSpin(false);
+              saveResult();
+            }}
+            spinDuration={1}
+            backgroundColors={data.map((item) => item.style.backgroundColor)}
+            textColors={data.map((item) => item.style.textColor)}
           />
-        </Modal>
-      )}
+          <StartButton variant="outlined" size="large" onClick={handleSpinClick}>
+            Start
+          </StartButton>
+        </div>
 
-      <Modal
-        open={isResultShow}
-        onClose={() => {
-          setIsResultShow(false);
-        }}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setIsResultShow(false);
-        }}
-      >
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.9)", // 투명도 10% (0.9)
-            width: "640px", // 크기 조정
-            height: "360px", // 크기 조정
-            maxWidth: "100vw",
-            maxHeight: "100vh",
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            overflowY: "auto",
-          }}
-        >
-          {data[prizeNumber].imageUrl && (
+        <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
+          <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
+        </div>
+
+        {showGif && (
+          <Modal
+            open={true}
+            style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
             <img
-              src={data[prizeNumber].imageUrl}
-              alt={data[prizeNumber].option}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                opacity: 0.5,
-                objectFit: "cover",
-              }}
+              src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
+              alt="1등 당첨 축하 GIF"
+              style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
             />
-          )}
-          <span
+          </Modal>
+        )}
+
+        <Modal
+          open={isResultShow}
+          onClose={() => setIsResultShow(false)}
+          style={{ cursor: "pointer" }}
+          onClick={() => setIsResultShow(false)}
+        >
+          <Box
             style={{
-              fontSize: "60px",
-              color: "black",
-              zIndex: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              width: "640px",
+              height: "360px",
+              maxWidth: "100vw",
+              maxHeight: "100vh",
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              overflowY: "auto",
             }}
           >
-            {getResultMessage()}
-          </span>
-        </Box>
-      </Modal>
-    </div> {/* This closes the .roulette-layout div */}
-  </>
-);
+            {data[prizeNumber].imageUrl && (
+              <img
+                src={data[prizeNumber].imageUrl}
+                alt={data[prizeNumber].option}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0.5,
+                  objectFit: "cover",
+                }}
+              />
+            )}
+            <span
+              style={{
+                fontSize: "60px",
+                color: "black",
+                zIndex: 2,
+              }}
+            >
+              {getResultMessage()}
+            </span>
+          </Box>
+        </Modal>
+      </div>
+    </>
+  );
+}
 
 export default App;

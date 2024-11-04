@@ -271,10 +271,9 @@ function App() {
           </StartButton>
         </div>
 
-        {/* GIF at the bottom */}
-        <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
-          <img src="https://media.tenor.com/WUWygJ0Fwz8AAAAM/jago33-slot-machine.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
-        </div>
+      {/* GIF at the bottom */}
+      <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
+        <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "150px" }} />
       </div>
 
       {showGif && (

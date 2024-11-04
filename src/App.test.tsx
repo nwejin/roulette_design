@@ -8,9 +8,9 @@ import "./App.css";
 const inventory = {
   first: 1,   // 1등 상품 수량
   second: 2,  // 2등 상품 수량
-  third: 5,   // 3등 상품 수량
-  fourth: 10, // 4등 상품 수량
-  fifth: 15,  // 5등 상품 수량
+  third: 3,   // 3등 상품 수량
+  fourth: 5, // 4등 상품 수량
+  fifth: 10,  // 5등 상품 수량
 };
 
 // 데이터 타입 정의

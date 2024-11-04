@@ -217,7 +217,7 @@ function App() {
       setTimeout(() => {
         setShowGif(false);
         setIsResultShow(true);
-      }, 2000); // 2초간 GIF 표시 후 숨김
+      }, 1000); // 2초간 GIF 표시 후 숨김
     } else {
       setIsResultShow(true);
     }

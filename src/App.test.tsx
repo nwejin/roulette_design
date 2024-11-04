@@ -242,34 +242,34 @@ function App() {
     }
   };
 
-  return (
-    <>
-      <div className="roulette-layout">
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>        
-          <Wheel
-            mustStartSpinning={mustSpin}
-            data={data.map((item) => ({
-              option: item.option,
-              style: item.style,
-            }))}
-            prizeNumber={prizeNumber}
-            outerBorderWidth={1}
-            innerBorderWidth={1}
-            radiusLineWidth={1}
-            innerRadius={1}
-            fontSize={20}
-            onStopSpinning={() => {
-              setMustSpin(false);
-              saveResult();
-            }}
-            spinDuration={1}
-            backgroundColors={data.map((item) => item.style.backgroundColor)}
-            textColors={data.map((item) => item.style.textColor)}
-          />
-          <StartButton variant="outlined" size="large" onClick={handleSpinClick}>
-            Start
-          </StartButton>
-        </div>
+return (
+  <>
+    <div className="roulette-layout">
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>        
+        <Wheel
+          mustStartSpinning={mustSpin}
+          data={data.map((item) => ({
+            option: item.option,
+            style: item.style,
+          }))}
+          prizeNumber={prizeNumber}
+          outerBorderWidth={1}
+          innerBorderWidth={1}
+          radiusLineWidth={1}
+          innerRadius={1}
+          fontSize={20}
+          onStopSpinning={() => {
+            setMustSpin(false);
+            saveResult();
+          }}
+          spinDuration={1}
+          backgroundColors={data.map((item) => item.style.backgroundColor)}
+          textColors={data.map((item) => item.style.textColor)}
+        />
+        <StartButton variant="outlined" size="large" onClick={handleSpinClick}>
+          Start
+        </StartButton>
+      </div>
 
       {/* GIF at the bottom */}
       <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
@@ -343,8 +343,8 @@ function App() {
           </span>
         </Box>
       </Modal>
-    </>
-  );
-}
+    </div> {/* This closes the .roulette-layout div */}
+  </>
+);
 
 export default App;

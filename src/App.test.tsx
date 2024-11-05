@@ -152,21 +152,22 @@ const data: PrizeData[] = [
 
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
-  width: "100px",
-  height: "100px",
-  borderRadius: "50%", // 둥근 형태로 만듦
-  fontSize: 16,
+  width: "200px", // 크기를 2배로 키움
+  height: "200px", // 크기를 2배로 키움
+  borderRadius: "50%", // 둥근 형태
+  fontSize: 20,
   color: "#fff",
   backgroundColor: red[500],
-  position: "absolute", // 절대 위치 설정
+  position: "absolute", // 절대 위치
   top: "50%",
   left: "50%",
-  transform: "translate(-50%, -50%)", // 룰렛 중앙에 위치
-  zIndex: 2, // 룰렛 위로 버튼이 오도록 설정
+  transform: "translate(-50%, -50%)", // 중앙 정렬
+  zIndex: 9999, // 충분히 높은 z-index 설정
   "&:hover": {
     backgroundColor: red[700],
   },
 }));
+
 
 
 function App() {
@@ -241,7 +242,7 @@ function App() {
   };
 
   const saveResult = () => {
-    const prize = data[prizeNumber]?.option || "Unknown"; // 당첨 결과를 prize에 저장
+    const prize = data[prizeNumber]?.option || "Unknown"; // 당첨 결과
     const resultData = {
       ...result,
       date: new Date().toISOString(),
@@ -249,6 +250,7 @@ function App() {
     };
   
     setResult(resultData);
+    updateInventory(prize); // 재고 감소 로직 호출
     sendToGoogleSheets(prize); // Google Sheets로 데이터 전송
   
     if (prize === "1등") {
@@ -261,6 +263,29 @@ function App() {
       setIsResultShow(true);
     }
   };
+  
+  const updateInventory = (prize) => {
+    switch (prize) {
+      case "1등":
+        if (inventory.first > 0) inventory.first--;
+        break;
+      case "2등":
+        if (inventory.second > 0) inventory.second--;
+        break;
+      case "3등":
+        if (inventory.third > 0) inventory.third--;
+        break;
+      case "4등":
+        if (inventory.fourth > 0) inventory.fourth--;
+        break;
+      case "5등":
+        if (inventory.fifth > 0) inventory.fifth--;
+        break;
+      default:
+        break;
+    }
+  };
+
 
 
   const getResultMessage = () => {

@@ -264,7 +264,7 @@ function App() {
     }
   };
   
-  const updateInventory = (prize) => {
+  const updateInventory = (prize: string) => {
     switch (prize) {
       case "1등":
         if (inventory.first > 0) inventory.first--;
@@ -285,6 +285,7 @@ function App() {
         break;
     }
   };
+
 
 
 

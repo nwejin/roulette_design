@@ -152,19 +152,22 @@ const data: PrizeData[] = [
 
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
-  marginTop: "20px",
-  marginBottom: "50px", // 버튼과 GIF가 겹치지 않도록 추가
-  width: "200px",
-  fontSize: 20,
+  width: "100px",
+  height: "100px",
+  borderRadius: "50%", // 둥근 형태로 만듦
+  fontSize: 16,
   color: "#fff",
   backgroundColor: red[500],
-  padding: "10px",
-  borderRadius: "10px",
+  position: "absolute", // 절대 위치 설정
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)", // 룰렛 중앙에 위치
+  zIndex: 2, // 룰렛 위로 버튼이 오도록 설정
   "&:hover": {
     backgroundColor: red[700],
-    color: "#fff",
   },
 }));
+
 
 function App() {
   const [mustSpin, setMustSpin] = useState(false);
@@ -308,9 +311,9 @@ function App() {
           </StartButton>
         </div>
 
-        <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
+{/*         <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
           <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "auto", height: "auto" }} />
-        </div>
+        </div> */}
 
 
         {showGif && (

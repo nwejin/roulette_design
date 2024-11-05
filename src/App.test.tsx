@@ -176,7 +176,7 @@ function App() {
     result: "",
   });
 
-  const sendToGoogleSheets = (prize) => {
+  const sendToGoogleSheets = (prize: string) => {
     const participationTime = new Date().toLocaleString(); // 참여 시간 생성
     const data = {
       participationId: Math.floor(Math.random() * 10000), // 임의의 참여 번호 생성

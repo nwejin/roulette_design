@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react"; // useRef 제거
 import { Wheel } from "react-custom-roulette";
 import { Box, Button, ButtonProps, Modal, styled } from "@mui/material";
 import { red } from "@mui/material/colors";
@@ -211,7 +211,6 @@ function App() {
       alert('이벤트 응모 중 오류가 발생했습니다.');
     });
   };
-
 
   const handleSpinClick = () => {
     if (mustSpin) return;

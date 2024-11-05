@@ -176,7 +176,42 @@ function App() {
     result: "",
   });
 
-  const currentAudio = useRef<HTMLAudioElement | null>(null); // 현재 재생 중인 오디오 트래킹
+  const sendToGoogleSheets = (prize) => {
+    const participationTime = new Date().toLocaleString(); // 참여 시간 생성
+    const data = {
+      participationId: Math.floor(Math.random() * 10000), // 임의의 참여 번호 생성
+      participationTime,
+      prize,
+      firstStock: inventory.first,
+      secondStock: inventory.second,
+      thirdStock: inventory.third,
+      fourthStock: inventory.fourth,
+      fifthStock: inventory.fifth,
+    };
+  
+    fetch('https://script.google.com/macros/s/AKfycbyKleMGBvgZlHHVgaITLqbZRqqDlVfTfE2t5Dian7IC9VSBQv7xX04Naqg7-G7Jf3ZfWw/exec', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      body: JSON.stringify(data),
+      mode: 'cors'
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Google Sheets 전송 성공:', response);
+        alert('이벤트 응모가 완료되었습니다.');
+      } else {
+        console.error('Google Sheets 전송 에러:', response);
+        alert('이벤트 응모 중 오류가 발생했습니다.');
+      }
+    })
+    .catch((error) => {
+      console.error('Google Sheets 전송 에러:', error);
+      alert('이벤트 응모 중 오류가 발생했습니다.');
+    });
+  };
+
 
   const handleSpinClick = () => {
     if (mustSpin) return;
@@ -204,24 +239,27 @@ function App() {
   };
 
   const saveResult = () => {
+    const prize = data[prizeNumber]?.option || "Unknown"; // 당첨 결과를 prize에 저장
     const resultData = {
       ...result,
       date: new Date().toISOString(),
-      result: data[prizeNumber]?.option || "Unknown",
+      result: prize,
     };
-
-    console.log("Result:", resultData);
-
-    if (data[prizeNumber]?.option === "1등") {
+  
+    setResult(resultData);
+    sendToGoogleSheets(prize); // Google Sheets로 데이터 전송
+  
+    if (prize === "1등") {
       setShowGif(true);
       setTimeout(() => {
         setShowGif(false);
         setIsResultShow(true);
-      }, 1000); // 2초간 GIF 표시 후 숨김
+      }, 1000); // 1초간 GIF 표시 후 숨김
     } else {
       setIsResultShow(true);
     }
   };
+
 
   const getResultMessage = () => {
     switch (data[prizeNumber].option) {

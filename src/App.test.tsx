@@ -155,18 +155,20 @@ const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
   width: "200px", // 크기를 2배로 키움
   height: "200px", // 크기를 2배로 키움
   borderRadius: "50%", // 둥근 형태
-  fontSize: 20,
-  color: "#fff",
-  backgroundColor: red[500],
+  fontSize: "40px", // 폰트 크기를 40px로 설정
+  color: red[500], // 글씨 색상을 빨간색으로 설정
+  backgroundColor: "#fff", // 배경색을 흰색으로 설정
   position: "absolute", // 절대 위치
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)", // 중앙 정렬
   zIndex: 9999, // 충분히 높은 z-index 설정
   "&:hover": {
-    backgroundColor: red[700],
+    backgroundColor: red[500], // 호버 시 배경색을 빨간색으로 설정
+    color: "#fff", // 호버 시 글씨 색상을 흰색으로 설정
   },
 }));
+
 
 
 
@@ -312,26 +314,28 @@ function App() {
     <>
       <div className="roulette-layout">
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>        
-          <Wheel
-            mustStartSpinning={mustSpin}
-            data={data.map((item) => ({
-              option: item.option,
-              style: item.style,
-            }))}
-            prizeNumber={prizeNumber}
-            outerBorderWidth={1}
-            innerBorderWidth={1}
-            radiusLineWidth={1}
-            innerRadius={1}
-            fontSize={20}
-            onStopSpinning={() => {
-              setMustSpin(false);
-              saveResult();
-            }}
-            spinDuration={1}
-            backgroundColors={data.map((item) => item.style.backgroundColor)}
-            textColors={data.map((item) => item.style.textColor)}
-          />
+      <Wheel
+        mustStartSpinning={mustSpin}
+        data={data.map((item) => ({
+          option: item.option,
+          style: item.style,
+        }))}
+        prizeNumber={prizeNumber}
+        outerBorderWidth={1}
+        innerBorderWidth={1}
+        radiusLineWidth={1}
+        innerRadius={1} // 기본 설정으로 복원
+        fontSize={20} // 기본 폰트 크기
+        onStopSpinning={() => {
+          setMustSpin(false);
+          saveResult();
+        }}
+        spinDuration={1}
+        backgroundColors={data.map((item) => item.style.backgroundColor)}
+        textColors={data.map((item) => item.style.textColor)}
+      />
+
+
           <StartButton variant="outlined" size="large" onClick={handleSpinClick}>
             Start
           </StartButton>

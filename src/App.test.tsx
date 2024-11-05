@@ -342,69 +342,74 @@ function App() {
         </div> */}
 
 
-        {showGif && (
-          <Modal
-            open={true}
-            style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-          >
-            <img
-              src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
-              alt="1등 당첨 축하 GIF"
-              style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
-            />
-          </Modal>
-        )}
-
+      {showGif && (
         <Modal
-          open={isResultShow}
-          onClose={() => setIsResultShow(false)}
-          style={{ cursor: "pointer" }}
-          onClick={() => setIsResultShow(false)}
+          open={true}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 99999, // 모달을 가장 앞에 배치
+          }}
         >
-          <Box
+          <img
+            src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
+            alt="1등 당첨 축하 GIF"
+            style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
+          />
+        </Modal>
+      )}
+      
+      <Modal
+        open={isResultShow}
+        onClose={() => setIsResultShow(false)}
+        style={{ cursor: "pointer", zIndex: 99999 }} // 모달을 가장 앞에 배치
+        onClick={() => setIsResultShow(false)}
+      >
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            width: "640px",
+            height: "360px",
+            maxWidth: "100vw",
+            maxHeight: "100vh",
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            overflowY: "auto",
+          }}
+        >
+          {data[prizeNumber].imageUrl && (
+            <img
+              src={data[prizeNumber].imageUrl}
+              alt={data[prizeNumber].option}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0.5,
+                objectFit: "cover",
+              }}
+            />
+          )}
+          <span
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-              backgroundColor: "rgba(255, 255, 255, 0.9)",
-              width: "640px",
-              height: "360px",
-              maxWidth: "100vw",
-              maxHeight: "100vh",
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              overflowY: "auto",
+              fontSize: "60px",
+              color: "black",
+              zIndex: 2,
             }}
           >
-            {data[prizeNumber].imageUrl && (
-              <img
-                src={data[prizeNumber].imageUrl}
-                alt={data[prizeNumber].option}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0.5,
-                  objectFit: "cover",
-                }}
-              />
-            )}
-            <span
-              style={{
-                fontSize: "60px",
-                color: "black",
-                zIndex: 2,
-              }}
-            >
-              {getResultMessage()}
-            </span>
-          </Box>
-        </Modal>
+            {getResultMessage()}
+          </span>
+        </Box>
+      </Modal>
       </div>
     </>
   );

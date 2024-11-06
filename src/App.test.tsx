@@ -6,11 +6,11 @@ import "./App.css";
 
 // 상품 재고 수량 (가정)
 const inventory = {
-  first: 1,   // 1등 상품 수량
-  second: 2,  // 2등 상품 수량
-  third: 3,   // 3등 상품 수량
-  fourth: 5, // 4등 상품 수량
-  fifth: 10,  // 5등 상품 수량
+  first: 2,   // 1등 상품 수량
+  second: 3,  // 2등 상품 수량
+  third: 5,   // 3등 상품 수량
+  fourth: 10, // 4등 상품 수량
+  fifth: 30,  // 5등 상품 수량
 };
 
 // 데이터 타입 정의
@@ -28,118 +28,57 @@ interface PrizeData {
 // 데이터 배열 수정 (1~5등, 꽝으로 구성)
 const data: PrizeData[] = [
   {
-    option: "1등",
+    option: "1등", // ms master 3s
     style: {
       backgroundColor: "#9ccefd",
       textColor: "black",
       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    }, // Gold for 1st prize
+    },
     probability: inventory.first > 0 ? 2 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
+    imageUrl: "https://blog.kakaocdn.net/dn/5Ebg7/btsGCpyUNHh/oCICWOyK9N8pKmlISc02qk/img.jpg",
   },
   {
-    option: "2등",
+    option: "2등", // 아트뮤 PB310 보조배터리
     style: {
       backgroundColor: "#ee024a",
       textColor: "white",
       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    }, // Bright Orange for 2nd prize
+    },
     probability: inventory.second > 0 ? 5 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
+    imageUrl: "https://img.danawa.com/prod_img/500000/818/023/img/58023818_1.jpg",
   },
   {
-    option: "3등",
+    option: "3등", // 로지텍 R500s 포인터
     style: {
       backgroundColor: "#b9dc88",
       textColor: "white",
       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    }, // Lime Green for 3rd prize
+    },
     probability: inventory.third > 0 ? 10 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
+    imageUrl: "https://img.danawa.com/prod_img/500000/109/198/img/6198109_3.jpg?shrink=360:360&_v=20220926155958",
   },
   {
-    option: "4등",
+    option: "4등", // 필립스 LED 에디슨 데스크 램프
     style: {
       backgroundColor: "#02dccb",
       textColor: "white",
       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    }, // Black for 4th prize
+    },
     probability: inventory.fourth > 0 ? 20 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+    imageUrl: "https://img.danawa.com/prod_img/500000/407/365/img/19365407_1.jpg?shrink=360:360",
   },
   {
-    option: "5등",
+    option: "5등", // 농심 굿즈
     style: {
       backgroundColor: "#00cfff",
       textColor: "white",
       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    }, // Blue for 5th prize
-    probability: inventory.fifth > 0 ? 23 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640", // 4등과 같은 이미지 사용
-  },
-  {
-    option: "꽝",
-    style: {
-      backgroundColor: "#fe8dcb",
-      textColor: "white",
-      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    }, // Dark Red for 'Lose'
-    probability: 100,
+    },
+    probability: inventory.fifth > 0 ? 30 : 0,
     imageUrl: "",
   },
-  // 데이터 복사하여 룰렛을 균형있게 만듭니다.
   {
-    option: "1등",
-    style: {
-      backgroundColor: "#9ccefd",
-      textColor: "black",
-      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    },
-    probability: inventory.first > 0 ? 2 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
-  },
-  {
-    option: "2등",
-    style: {
-      backgroundColor: "#ee024a",
-      textColor: "white",
-      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    },
-    probability: inventory.second > 0 ? 5 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
-  },
-  {
-    option: "3등",
-    style: {
-      backgroundColor: "#b9dc88",
-      textColor: "white",
-      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    },
-    probability: inventory.third > 0 ? 10 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
-  },
-  {
-    option: "4등",
-    style: {
-      backgroundColor: "#02dccb",
-      textColor: "white",
-      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    },
-    probability: inventory.fourth > 0 ? 20 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
-  },
-  {
-    option: "5등",
-    style: {
-      backgroundColor: "#00cfff",
-      textColor: "white",
-      textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
-    },
-    probability: inventory.fifth > 0 ? 23 : 0,
-    imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
-  },
-  {
-    option: "꽝",
+    option: "6등",
     style: {
       backgroundColor: "#fe8dcb",
       textColor: "white",
@@ -149,6 +88,68 @@ const data: PrizeData[] = [
     imageUrl: "",
   },
 ];
+  // 데이터 복사하여 룰렛을 균형있게 만듭니다.
+//   {
+//     option: "1등",
+//     style: {
+//       backgroundColor: "#9ccefd",
+//       textColor: "black",
+//       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+//     },
+//     probability: inventory.first > 0 ? 2 : 0,
+//     imageUrl: "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
+//   },
+//   {
+//     option: "2등",
+//     style: {
+//       backgroundColor: "#ee024a",
+//       textColor: "white",
+//       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+//     },
+//     probability: inventory.second > 0 ? 5 : 0,
+//     imageUrl: "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
+//   },
+//   {
+//     option: "3등",
+//     style: {
+//       backgroundColor: "#b9dc88",
+//       textColor: "white",
+//       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+//     },
+//     probability: inventory.third > 0 ? 10 : 0,
+//     imageUrl: "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
+//   },
+//   {
+//     option: "4등",
+//     style: {
+//       backgroundColor: "#02dccb",
+//       textColor: "white",
+//       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+//     },
+//     probability: inventory.fourth > 0 ? 20 : 0,
+//     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+//   },
+//   {
+//     option: "5등",
+//     style: {
+//       backgroundColor: "#00cfff",
+//       textColor: "white",
+//       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+//     },
+//     probability: inventory.fifth > 0 ? 23 : 0,
+//     imageUrl: "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+//   },
+//   {
+//     option: "6등",
+//     style: {
+//       backgroundColor: "#fe8dcb",
+//       textColor: "white",
+//       textShadow: "2px 2px 0px white, -2px -2px 0px white, -2px 2px 0px white, 2px -2px 0px white",
+//     },
+//     probability: 100,
+//     imageUrl: "",
+//   },
+// ];
 
 
 const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
@@ -205,8 +206,7 @@ function App() {
     })
     .then(response => {
       if (response.ok) {
-        console.log('Google Sheets 전송 성공:', response);
-        alert('이벤트 응모가 완료되었습니다.');
+        console.log('Google Sheets 전송 성공:', response);        
       } else {
         console.error('Google Sheets 전송 에러:', response);
         alert('이벤트 응모 중 오류가 발생했습니다.');
@@ -303,8 +303,8 @@ function App() {
         return "🥉4등 당첨😉";
       case "5등":
         return "🎖5등 당첨🙂";
-      case "꽝":
-        return "🧨꽝💥";
+      case "6등":
+        return "6등 당첨😅";
       default:
         return "";
     }
@@ -341,9 +341,57 @@ function App() {
           </StartButton>
         </div>
 
-{/*         <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%" }}>
-          <img src="/asset/banner.gif" alt="Slot Machine GIF" style={{ width: "auto", height: "auto" }} />
-        </div> */}
+        <div style={{ position: "absolute", top: 10, left: "50%", transform: "translateX(-50%)", width: "40%" }}>
+          <img src="/asset/banner2.gif" alt="Slot Machine GIF" style={{ width: "100%", height: "auto" }} />
+        </div>
+
+        
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "20px",
+            transform: "translateY(-50%)",
+            backgroundColor: "white",
+            padding: "10px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // 그림자 추가
+            width: "200px",
+          }}
+        >
+          <h2 style={{ textAlign: "center" }}>상품 재고 수량</h2>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <thead>
+              <tr>
+                <th style={{ border: '1px solid black', padding: '8px' }}>등수</th>
+                <th style={{ border: '1px solid black', padding: '8px' }}>재고</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '8px' }}>1등</td>
+                <td style={{ border: '1px solid black', padding: '8px' }}>{inventory.first}</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '8px' }}>2등</td>
+                <td style={{ border: '1px solid black', padding: '8px' }}>{inventory.second}</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '8px' }}>3등</td>
+                <td style={{ border: '1px solid black', padding: '8px' }}>{inventory.third}</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '8px' }}>4등</td>
+                <td style={{ border: '1px solid black', padding: '8px' }}>{inventory.fourth}</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '8px' }}>5등</td>
+                <td style={{ border: '1px solid black', padding: '8px' }}>{inventory.fifth}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
 
 
       {showGif && (

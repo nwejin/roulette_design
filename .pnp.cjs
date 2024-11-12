@@ -57,6 +57,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:17.0.2"],\
             ["react-custom-roulette", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:1.2.0"],\
             ["react-dom", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:17.0.2"],\
+            ["react-qr-reader", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:3.0.0-beta-1"],\
             ["react-router", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:6.2.1"],\
             ["react-router-dom", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:6.2.1"],\
             ["react-scripts", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:5.0.1"],\
@@ -5243,6 +5244,49 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@xtuc-long-npm-4.2.2-37236e6d72-8ed0d477ce.zip/node_modules/@xtuc/long/",\
           "packageDependencies": [\
             ["@xtuc/long", "npm:4.2.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@zxing/browser", [\
+        ["npm:0.0.7", {\
+          "packageLocation": "./.yarn/cache/@zxing-browser-npm-0.0.7-4f5994357c-5f56628382.zip/node_modules/@zxing/browser/",\
+          "packageDependencies": [\
+            ["@zxing/browser", "npm:0.0.7"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:c76140f1fb9e60ac404fcad4be5288c67589f2d11e544a47a0795e5010e9dd9d105bbd065fa024226496903d65bd9f961c87b19368087ae17de7473a88de72c5#npm:0.0.7", {\
+          "packageLocation": "./.yarn/__virtual__/@zxing-browser-virtual-310141e623/0/cache/@zxing-browser-npm-0.0.7-4f5994357c-5f56628382.zip/node_modules/@zxing/browser/",\
+          "packageDependencies": [\
+            ["@zxing/browser", "virtual:c76140f1fb9e60ac404fcad4be5288c67589f2d11e544a47a0795e5010e9dd9d105bbd065fa024226496903d65bd9f961c87b19368087ae17de7473a88de72c5#npm:0.0.7"],\
+            ["@types/zxing__library", null],\
+            ["@zxing/library", "npm:0.18.6"],\
+            ["@zxing/text-encoding", "npm:0.9.0"]\
+          ],\
+          "packagePeers": [\
+            "@types/zxing__library",\
+            "@zxing/library"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@zxing/library", [\
+        ["npm:0.18.6", {\
+          "packageLocation": "./.yarn/cache/@zxing-library-npm-0.18.6-28ffb15218-564a25f624.zip/node_modules/@zxing/library/",\
+          "packageDependencies": [\
+            ["@zxing/library", "npm:0.18.6"],\
+            ["@zxing/text-encoding", "npm:0.9.0"],\
+            ["ts-custom-error", "npm:3.3.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@zxing/text-encoding", [\
+        ["npm:0.9.0", {\
+          "packageLocation": "./.yarn/cache/@zxing-text-encoding-npm-0.9.0-8426ff59e9-c23b12aee7.zip/node_modules/@zxing/text-encoding/",\
+          "packageDependencies": [\
+            ["@zxing/text-encoding", "npm:0.9.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12536,6 +12580,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:17.0.2"],\
             ["react-custom-roulette", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:1.2.0"],\
             ["react-dom", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:17.0.2"],\
+            ["react-qr-reader", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:3.0.0-beta-1"],\
             ["react-router", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:6.2.1"],\
             ["react-router-dom", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:6.2.1"],\
             ["react-scripts", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:5.0.1"],\
@@ -14602,6 +14647,35 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["react-qr-reader", [\
+        ["npm:3.0.0-beta-1", {\
+          "packageLocation": "./.yarn/cache/react-qr-reader-npm-3.0.0-beta-1-159e0ee97b-f85fc49025.zip/node_modules/react-qr-reader/",\
+          "packageDependencies": [\
+            ["react-qr-reader", "npm:3.0.0-beta-1"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:3.0.0-beta-1", {\
+          "packageLocation": "./.yarn/__virtual__/react-qr-reader-virtual-c76140f1fb/0/cache/react-qr-reader-npm-3.0.0-beta-1-159e0ee97b-f85fc49025.zip/node_modules/react-qr-reader/",\
+          "packageDependencies": [\
+            ["react-qr-reader", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:3.0.0-beta-1"],\
+            ["@types/react", "npm:17.0.38"],\
+            ["@types/react-dom", "npm:17.0.11"],\
+            ["@zxing/browser", "virtual:c76140f1fb9e60ac404fcad4be5288c67589f2d11e544a47a0795e5010e9dd9d105bbd065fa024226496903d65bd9f961c87b19368087ae17de7473a88de72c5#npm:0.0.7"],\
+            ["@zxing/library", "npm:0.18.6"],\
+            ["react", "npm:17.0.2"],\
+            ["react-dom", "virtual:6e6e32e814950d4bf90a1d4922960a6241df25cd673f028c447a72555f53eb0c0c54a3960b105ef6fa1f25530b547321e682074bc6c0164aca8f31fc008efb58#npm:17.0.2"],\
+            ["rollup", "npm:2.79.2"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["react-refresh", [\
         ["npm:0.11.0", {\
           "packageLocation": "./.yarn/cache/react-refresh-npm-0.11.0-c0a4e59e76-112178a05b.zip/node_modules/react-refresh/",\
@@ -15173,6 +15247,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/rollup-npm-2.66.1-9340aadcc4-ecd7917dee.zip/node_modules/rollup/",\
           "packageDependencies": [\
             ["rollup", "npm:2.66.1"],\
+            ["fsevents", "patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:2.79.2", {\
+          "packageLocation": "./.yarn/cache/rollup-npm-2.79.2-1b08e69c0e-df7aa4c8b9.zip/node_modules/rollup/",\
+          "packageDependencies": [\
+            ["rollup", "npm:2.79.2"],\
             ["fsevents", "patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"]\
           ],\
           "linkType": "HARD"\
@@ -16440,6 +16522,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/tryer-npm-1.0.1-f48ab9ec32-1cf14d7f67.zip/node_modules/tryer/",\
           "packageDependencies": [\
             ["tryer", "npm:1.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["ts-custom-error", [\
+        ["npm:3.3.1", {\
+          "packageLocation": "./.yarn/cache/ts-custom-error-npm-3.3.1-e5c805db5b-50a1e825fc.zip/node_modules/ts-custom-error/",\
+          "packageDependencies": [\
+            ["ts-custom-error", "npm:3.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\

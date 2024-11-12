@@ -1,27 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Wheel } from "react-custom-roulette";
-import {
-  Box,
-  Button,
-  ButtonProps,
-  Modal,
-  Snackbar,
-  Alert,
-  styled,
-} from "@mui/material";
-import { red } from "@mui/material/colors";
-import { QrReader } from "react-qr-reader";
-import "./App.css";
+import React, { useState, useEffect, useRef } from 'react';
+import { Wheel } from 'react-custom-roulette';
+import { Box, Button, ButtonProps, Modal, Snackbar, Alert, styled } from '@mui/material';
+import { red, grey, yellow, orange, blue } from '@mui/material/colors';
+import { QrReader } from 'react-qr-reader';
+import './App.css';
+import { useMediaQuery } from 'react-responsive';
 
 // 임시 데이터베이스 배열
-const qrcodesDB = ["digitaltransformation", "nongshim", "lee", "park", "yoon", "jung", "joe"];
+const qrcodesDB = ['digitaltransformation', 'nongshim', 'lee', 'park', 'yoon', 'jung', 'joe'];
 
 // 상품 재고 수량 (가정)
 const inventory = {
-  first: 1,  // 1등 상품 수량
+  first: 1, // 1등 상품 수량
   second: 2, // 2등 상품 수량
-  third: 5,  // 3등 상품 수량
-  fourth: 10 // 4등 상품 수량
+  third: 5, // 3등 상품 수량
+  fourth: 10, // 4등 상품 수량
 };
 
 // 데이터 타입 정의
@@ -38,61 +31,43 @@ interface PrizeData {
 // 데이터 배열
 const data: PrizeData[] = [
   {
-    option: "1등",
-    style: { backgroundColor: "#FFB6C1", textColor: "black" },
+    option: '1등',
+    style: { backgroundColor: yellow[100], textColor: grey[900] },
     probability: inventory.first > 0 ? 3 : 0, // 재고 수량에 따른 확률 설정
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400",
+    imageUrl: 'https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400',
   },
   {
-    option: "2등",
-    style: { backgroundColor: "#ADD8E6", textColor: "black" },
+    option: '2등',
+    style: { backgroundColor: red[100], textColor: grey[900] },
     probability: inventory.second > 0 ? 7 : 0, // 재고 수량에 따른 확률 설정
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520",
+    imageUrl: 'https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520',
   },
   {
-    option: "3등",
-    style: { backgroundColor: "#90EE90", textColor: "black" },
+    option: '3등',
+    style: { backgroundColor: orange[100], textColor: grey[900] },
     probability: inventory.third > 0 ? 15 : 0, // 재고 수량에 따른 확률 설정
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580",
+    imageUrl: 'https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580',
   },
   {
-    option: "4등",
-    style: { backgroundColor: "#FFFACD", textColor: "black" },
+    option: '4등',
+    style: { backgroundColor: blue[100], textColor: grey[900] },
     probability: inventory.fourth > 0 ? 25 : 0, // 재고 수량에 따른 확률 설정
-    imageUrl:
-      "https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640",
+    imageUrl: 'https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640',
   },
   {
-    option: "꽝",
-    style: { backgroundColor: "#D3D3D3", textColor: "black" },
+    option: '꽝',
+    style: { backgroundColor: grey[200], textColor: grey[800] },
     probability: 50, // 꽝은 항상 확률 유지
-    imageUrl: "",
+    imageUrl: '',
   },
 ];
-
-const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
-  marginTop: "20px",
-  width: "200px",
-  fontSize: 20,
-  color: "#fff",
-  backgroundColor: red[500],
-  padding: "10px",
-  borderRadius: "10px",
-  "&:hover": {
-    backgroundColor: red[700],
-    color: "#fff",
-  },
-}));
 
 function App() {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [isResultShow, setIsResultShow] = useState<boolean>(false);
   const [noti, setNoti] = useState<{
-    type: "success" | "error";
+    type: 'success' | 'error';
     message: string;
   } | null>(null);
   const [showQR, setShowQR] = useState(false);
@@ -100,8 +75,8 @@ function App() {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [showGif, setShowGif] = useState(false);
   const [result, setResult] = useState<{ date: string; result: string; qrcode?: string }>({
-    date: "",
-    result: "",
+    date: '',
+    result: '',
   });
   const [lastGameTime, setLastGameTime] = useState<number | null>(null); // 최근 게임 시간 기록
 
@@ -111,11 +86,11 @@ function App() {
     async function checkCameraPermission() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        stream.getTracks().forEach(track => track.stop());
-        console.log("Camera permission granted");
+        stream.getTracks().forEach((track) => track.stop());
+        console.log('Camera permission granted');
       } catch (err) {
-        console.error("Camera permission error:", err);
-        setCameraError("카메라 권한을 허용해주세요.");
+        console.error('Camera permission error:', err);
+        setCameraError('카메라 권한을 허용해주세요.');
       }
     }
     checkCameraPermission();
@@ -142,27 +117,32 @@ function App() {
         audio.onended = onEndedCallback;
       }
       audio.play().catch((error) => {
-        console.error("Error playing audio:", error);
+        console.error('Error playing audio:', error);
       });
     } catch (error) {
-      console.log("Audio file not found or could not be played:", filePath);
+      console.log('Audio file not found or could not be played:', filePath);
     }
   };
 
-  const playAudioWithDuration = (filePath: string, duration: number, onEndedCallback?: () => void, interruptible: boolean = true) => {
+  const playAudioWithDuration = (
+    filePath: string,
+    duration: number,
+    onEndedCallback?: () => void,
+    interruptible: boolean = true
+  ) => {
     // 특정 파일(예: 룰렛 소리)은 중단되지 않도록 처리
     if (interruptible) {
       stopCurrentAudio(); // 새로운 오디오가 시작되면 기존 오디오 중지
     }
-  
+
     try {
       const audio = new Audio(filePath);
       currentAudio.current = audio; // 현재 재생 중인 오디오 업데이트
-  
+
       audio.play().catch((error) => {
-        console.error("Error playing audio:", error);
+        console.error('Error playing audio:', error);
       });
-  
+
       // 주어진 duration (밀리초) 후에 오디오 중단 및 콜백 실행
       setTimeout(() => {
         stopCurrentAudio();
@@ -171,11 +151,10 @@ function App() {
         }
       }, duration);
     } catch (error) {
-      console.log("Audio file not found or could not be played:", filePath);
+      console.log('Audio file not found or could not be played:', filePath);
     }
   };
 
-  
   // 최근 5분 내에 게임이 시작되었는지 체크
   const isRecentGameStarted = () => {
     if (!lastGameTime) return false;
@@ -188,12 +167,12 @@ function App() {
     if (result) {
       const scannedText = result.text;
       setUser(scannedText);
-      console.log("Scanned QR URL:", scannedText);
+      console.log('Scanned QR URL:', scannedText);
 
       // DB 검증 로직
       stopCurrentAudio(); // QR 스캔 시 기존 오디오 중단
       if (qrcodesDB.includes(scannedText)) {
-        setResult(prev => ({
+        setResult((prev) => ({
           ...prev,
           date: new Date().toISOString(),
           qrcode: scannedText,
@@ -203,13 +182,13 @@ function App() {
         handleAuthenticationSuccess();
       } else {
         playAudio('/asset/retry.mp3'); // 불일치 피드백
-        setNoti({ type: "error", message: "없는 정보입니다" });
+        setNoti({ type: 'error', message: '없는 정보입니다' });
         setShowQR(false);
       }
     } else if (result === null) {
-      console.log("No QR code found");
+      console.log('No QR code found');
     } else if (result instanceof Error) {
-      console.error("QR Reader error:", result);
+      console.error('QR Reader error:', result);
       setCameraError(`QR 스캐너 오류: ${result.message}`);
       setShowQR(false);
     }
@@ -217,7 +196,7 @@ function App() {
 
   const startSpeechRecognition = () => {
     if (isRecentGameStarted()) {
-      console.log("최근 5분 내에 게임이 시작되었습니다. 음성 인식을 생략합니다.");
+      console.log('최근 5분 내에 게임이 시작되었습니다. 음성 인식을 생략합니다.');
       handleSpinClick(); // 음성 인식 없이 바로 게임 진행
       return;
     }
@@ -230,16 +209,16 @@ function App() {
 
     recognition.onresult = (event: any) => {
       const speechResult = event.results[0][0].transcript.trim();
-      console.log("Speech recognition result:", speechResult);
+      console.log('Speech recognition result:', speechResult);
 
-      if (speechResult.includes("게임시작") || speechResult.includes("시작")) {
+      if (speechResult.includes('게임시작') || speechResult.includes('시작')) {
         playAudio('/asset/intro.mp3'); // 게임 시작 안내 음성
         handleSpinClick();
       }
     };
 
     recognition.onerror = (event: any) => {
-      console.error("Speech recognition error:", event.error);
+      console.error('Speech recognition error:', event.error);
       playAudio('/asset/intro.mp3'); // 게임 시작 안내 음성
       handleSpinClick();
     };
@@ -253,7 +232,7 @@ function App() {
   };
 
   const handleAuthenticationSuccess = () => {
-    setNoti({ type: "success", message: "인증이 완료되었습니다" });
+    setNoti({ type: 'success', message: '인증이 완료되었습니다' });
     setTimeout(() => {
       setNoti(null);
       startRoulette();
@@ -285,15 +264,15 @@ function App() {
   const saveResult = () => {
     const resultData = {
       ...result,
-      result: data[prizeNumber]?.option || "Unknown",
+      result: data[prizeNumber]?.option || 'Unknown',
     };
 
-    console.log("Result:", resultData);
+    console.log('Result:', resultData);
 
     // 당첨에 따른 음성 재생
     const prizeOption = data[prizeNumber]?.option;
     if (prizeOption) {
-      if (prizeOption === "꽝") {
+      if (prizeOption === '꽝') {
         // 꽝: fail1을 3초만 재생 후 fail 재생
         playAudioWithDuration('/asset/fail1.mp3', 3000, () => playAudio('/asset/fail.mp3'));
       } else {
@@ -302,7 +281,7 @@ function App() {
       }
     }
 
-    if (prizeOption === "1등") {
+    if (prizeOption === '1등') {
       // 1등 당첨 시 GIF 애니메이션 표시
       setShowGif(true);
       setTimeout(() => {
@@ -316,53 +295,96 @@ function App() {
 
   const getResultMessage = () => {
     switch (data[prizeNumber].option) {
-      case "1등":
-        return "🏆1등 당첨🎉";
-      case "2등":
-        return "🥇2등 당첨🎁";
-      case "3등":
-        return "🥈3등 당첨👏";
-      case "4등":
-        return "🥉4등 당첨😉";
-      case "꽝":
-        return "🧨꽝💥";
+      case '1등':
+        return '🏆1등 당첨🎉';
+      case '2등':
+        return '🥇2등 당첨🎁';
+      case '3등':
+        return '🥈3등 당첨👏';
+      case '4등':
+        return '🥉4등 당첨😉';
+      case '꽝':
+        return '🧨꽝💥';
       default:
-        return "";
+        return '';
     }
+  };
+  const buttonSize = 50;
+  const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%) rotate(45deg)',
+    padding: 0,
+    width: buttonSize * 3.5,
+    height: buttonSize * 3.5,
+    borderRadius: '50%',
+    fontSize: '1.2rem',
+    color: '#fff',
+    backgroundColor: red[400],
+    // padding: "10px",
+    '&:hover': {
+      backgroundColor: red[700],
+      color: '#fff',
+    },
+  }));
+
+  // 포인터 미디어쿼리 적용
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
+  // pointerProps 스타일 설정
+  const pointerStyle = {
+    // 모바일에서는 1rem로, 그 외에는 3rem
+    top: isMobile ? '1rem' : '3rem',
+    right: isMobile ? '1rem' : '3rem',
+    width: '15%',
   };
 
   return (
     <>
       <div className="roulette-layout">
-        <div style={{ textAlign: "center" }}>
+        <div className="headerContainer">
           <h1>룰렛</h1>
-          <Wheel
-            mustStartSpinning={mustSpin}
-            data={data.map((item) => ({
-              option: item.option,
-              style: item.style,
-            }))}
-            prizeNumber={prizeNumber}
-            outerBorderWidth={2}
-            innerBorderWidth={2}
-            radiusLineWidth={3}
-            innerRadius={0}
-            fontSize={20}
-            onStopSpinning={() => {
-              setMustSpin(false);
-              saveResult();
-            }}
-            spinDuration={1}
-            backgroundColors={data.map((item) => item.style.backgroundColor)}
-            textColors={data.map((item) => item.style.textColor)}
-          />
-          <StartButton
-            variant="outlined"
-            size="large"
-            onClick={startSpeechRecognition} // 음성 인식 시작
-          >
-            Start
-          </StartButton>
+        </div>
+        <div style={{ textAlign: 'center', position: 'relative', display: 'inline-block' }}>
+          <div className="roulette-border">
+            <Wheel
+              mustStartSpinning={mustSpin}
+              data={data.map((item) => ({
+                option: item.option,
+                style: item.style,
+              }))}
+              prizeNumber={prizeNumber}
+              outerBorderColor={grey[200]}
+              outerBorderWidth={1}
+              innerBorderWidth={5}
+              innerBorderColor={grey[200]}
+              radiusLineWidth={0}
+              innerRadius={buttonSize / 2}
+              fontSize={20}
+              onStopSpinning={() => {
+                setMustSpin(false);
+                saveResult();
+              }}
+              spinDuration={1}
+              backgroundColors={data.map((item) => item.style.backgroundColor)}
+              textColors={data.map((item) => item.style.textColor)}
+              pointerProps={{
+                src: '', // 커서 이미지 URL
+                style: pointerStyle,
+              }}
+              perpendicularText={true}
+              textDistance={80}
+            />
+
+            <StartButton
+              variant="outlined"
+              size="large"
+              onClick={startSpeechRecognition} // 음성 인식 시작
+            >
+              Start
+            </StartButton>
+          </div>
         </div>
       </div>
 
@@ -371,58 +393,61 @@ function App() {
         onClose={() => {
           setShowQR(false);
         }}
-        style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute' }}>
         <Box
           style={{
-            width: "300px", // 가로 크기 조정
-            height: "300px", // 세로 크기 조정
-            backgroundColor: "white",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
-          }}
-        >
+            width: '25rem', // 가로 크기 조정
+            height: '30rem', // 세로 크기 조정
+            backgroundColor: 'none',
+            borderRadius: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            position: 'relative',
+          }}>
           {cameraError ? (
             <div>{cameraError}</div>
           ) : (
-            <QrReader
-              onResult={handleScan}
-              constraints={{ facingMode: 'environment' }}
-              containerStyle={{ width: "100%", height: "100%" }}
-              videoStyle={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
+            <div className="QR-container">
+              <div className="QR-border">
+                <div className="top-left"></div>
+                <div className="bottom-left"></div>
+                <div className="top-right"></div>
+                <div className="bottom-right"></div>
+              </div>
+              <QrReader
+                onResult={handleScan}
+                constraints={{ facingMode: 'environment' }}
+                containerStyle={{ width: '100%', height: '100%' }}
+                videoStyle={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '10px',
+                  objectFit: 'cover',
+                }}
+              />
+            </div>
           )}
           <Button
             onClick={() => setShowQR(false)}
+            variant="contained"
             style={{
-              marginTop: "10px",
-              position: "absolute",
-              bottom: "10px",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          >
+              width: '80%',
+              backgroundColor: blue[500],
+              boxShadow: 'none',
+            }}>
             닫기
           </Button>
         </Box>
       </Modal>
 
       {showGif && (
-        <Modal
-          open={true}
-          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-        >
+        <Modal open={true} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <img
             src="https://i.namu.wiki/i/aEaRClFwgm0hl2PFb7-j20_WC99GnPFUkg6njz_IckIXXx_UZDELGldWijSZw-IqYOFXeUJNF41HESd380w0Og.gif"
             alt="1등 당첨 축하 GIF"
-            style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
+            style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
           />
         </Modal>
       )}
@@ -432,51 +457,48 @@ function App() {
         onClose={() => {
           setIsResultShow(false);
         }}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: 'pointer' }}
         onClick={() => {
           setIsResultShow(false);
-        }}
-      >
+        }}>
         <Box
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.9)", // 투명도 10% (0.9)
-            width: "640px", // 크기 조정
-            height: "360px", // 크기 조정
-            maxWidth: "100vw",
-            maxHeight: "100vh",
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            overflowY: "auto",
-          }}
-        >
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)', // 투명도 10% (0.9)
+            width: '640px', // 크기 조정
+            height: '360px', // 크기 조정
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            overflowY: 'auto',
+          }}>
           {data[prizeNumber].imageUrl && (
             <img
               src={data[prizeNumber].imageUrl}
               alt={data[prizeNumber].option}
               style={{
-                position: "absolute",
+                position: 'absolute',
                 top: 0,
                 left: 0,
-                width: "100%",
-                height: "100%",
+                width: '100%',
+                height: '100%',
                 opacity: 0.5,
-                objectFit: "cover",
+                objectFit: 'cover',
               }}
             />
           )}
           <span
             style={{
-              fontSize: "60px",
-              color: "black",
+              fontSize: '60px',
+              color: 'black',
               zIndex: 2,
-            }}
-          >
+            }}>
             {getResultMessage()}
           </span>
         </Box>
@@ -487,9 +509,8 @@ function App() {
         onClose={() => {
           setNoti(null);
         }}
-        autoHideDuration={3000}
-      >
-        <Alert severity={noti?.type} variant="filled" sx={{ width: "100%" }}>
+        autoHideDuration={3000}>
+        <Alert severity={noti?.type} variant="filled" sx={{ width: '100%' }}>
           {noti?.message}
         </Alert>
       </Snackbar>

@@ -5,7 +5,6 @@ import { red, grey, yellow, orange, blue } from '@mui/material/colors';
 import { QrReader } from 'react-qr-reader';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-
 // 임시 데이터베이스 배열
 const qrcodesDB = ['digitaltransformation', 'nongshim', 'lee', 'park', 'yoon', 'jung', 'joe'];
 
@@ -28,35 +27,43 @@ interface PrizeData {
   imageUrl: string;
 }
 
+const themeBlue = '#35B1FF';
+
 // 데이터 배열
 const data: PrizeData[] = [
   {
     option: '1등',
-    style: { backgroundColor: yellow[100], textColor: grey[900] },
+    style: { backgroundColor: themeBlue, textColor: '#333' },
     probability: inventory.first > 0 ? 3 : 0, // 재고 수량에 따른 확률 설정
     imageUrl: 'https://cdn.funshop.co.kr//products/0000294741/vs_image800.jpg?1725245400',
   },
   {
     option: '2등',
-    style: { backgroundColor: red[100], textColor: grey[900] },
+    style: { backgroundColor: grey[100], textColor: '#333' },
     probability: inventory.second > 0 ? 7 : 0, // 재고 수량에 따른 확률 설정
     imageUrl: 'https://cdn.funshop.co.kr//products/0000262710/vs_image800.jpg?1725245520',
   },
   {
     option: '3등',
-    style: { backgroundColor: orange[100], textColor: grey[900] },
+    style: { backgroundColor: themeBlue, textColor: '#333' },
     probability: inventory.third > 0 ? 15 : 0, // 재고 수량에 따른 확률 설정
     imageUrl: 'https://cdn.funshop.co.kr//products/0000204053/vs_image800.jpg?1725245580',
   },
   {
     option: '4등',
-    style: { backgroundColor: blue[100], textColor: grey[900] },
+    style: { backgroundColor: grey[100], textColor: '#333' },
+    probability: inventory.fourth > 0 ? 25 : 0, // 재고 수량에 따른 확률 설정
+    imageUrl: 'https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640',
+  },
+  {
+    option: '5등',
+    style: { backgroundColor: themeBlue, textColor: '#333' },
     probability: inventory.fourth > 0 ? 25 : 0, // 재고 수량에 따른 확률 설정
     imageUrl: 'https://cdn.funshop.co.kr//products/0000281263/vs_image800.jpg?1725245640',
   },
   {
     option: '꽝',
-    style: { backgroundColor: grey[200], textColor: grey[800] },
+    style: { backgroundColor: grey[200], textColor: '#333' },
     probability: 50, // 꽝은 항상 확률 유지
     imageUrl: '',
   },
@@ -309,23 +316,26 @@ function App() {
         return '';
     }
   };
-  const buttonSize = 50;
+  const buttonSize = 60;
   const StartButton = styled(Button)<ButtonProps>(({ theme }) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%) rotate(45deg)',
     padding: 0,
-    width: buttonSize * 3.5,
-    height: buttonSize * 3.5,
+    border: 'none',
+    width: buttonSize * 3.1,
+    height: buttonSize * 3.1,
     borderRadius: '50%',
-    fontSize: '1.2rem',
-    color: '#fff',
-    backgroundColor: red[400],
+    fontSize: '1.6rem',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+    color: red[500],
+    backgroundColor: grey[50],
     // padding: "10px",
     '&:hover': {
-      backgroundColor: red[700],
+      backgroundColor: red[500],
       color: '#fff',
+      border: 'none',
     },
   }));
 
@@ -335,56 +345,61 @@ function App() {
   // pointerProps 스타일 설정
   const pointerStyle = {
     // 모바일에서는 1rem로, 그 외에는 3rem
-    top: isMobile ? '1rem' : '3rem',
-    right: isMobile ? '1rem' : '3rem',
+    top: isMobile ? '1rem' : '2rem',
+    right: isMobile ? '1rem' : '2rem',
     width: '15%',
   };
+
+  const dotCount = 36; // 도트 개수
 
   return (
     <>
       <div className="roulette-layout">
-        <div className="headerContainer">
-          <h1>룰렛</h1>
-        </div>
-        <div style={{ textAlign: 'center', position: 'relative', display: 'inline-block' }}>
-          <div className="roulette-border">
-            <Wheel
-              mustStartSpinning={mustSpin}
-              data={data.map((item) => ({
-                option: item.option,
-                style: item.style,
-              }))}
-              prizeNumber={prizeNumber}
-              outerBorderColor={grey[200]}
-              outerBorderWidth={1}
-              innerBorderWidth={5}
-              innerBorderColor={grey[200]}
-              radiusLineWidth={0}
-              innerRadius={buttonSize / 2}
-              fontSize={20}
-              onStopSpinning={() => {
-                setMustSpin(false);
-                saveResult();
-              }}
-              spinDuration={1}
-              backgroundColors={data.map((item) => item.style.backgroundColor)}
-              textColors={data.map((item) => item.style.textColor)}
-              pointerProps={{
-                src: '', // 커서 이미지 URL
-                style: pointerStyle,
-              }}
-              perpendicularText={true}
-              textDistance={80}
-            />
+        {/* <div className="headerContainer">
+          <h1>DT FAIR 2024</h1>
+        </div> */}
+        <div className="container">
+          {/* <div className="roulette-border"> */}
+          <div className="dots"></div>
+          <Wheel
+            mustStartSpinning={mustSpin}
+            data={data.map((item) => ({
+              option: item.option,
+              style: item.style,
+            }))}
+            startingOptionIndex={0}
+            prizeNumber={prizeNumber}
+            outerBorderColor={grey[200]}
+            outerBorderWidth={1}
+            innerBorderWidth={10}
+            innerBorderColor={grey[300]}
+            radiusLineWidth={0}
+            innerRadius={buttonSize / 2}
+            fontSize={20}
+            onStopSpinning={() => {
+              setMustSpin(false);
+              saveResult();
+            }}
+            spinDuration={1}
+            backgroundColors={data.map((item) => item.style.backgroundColor)}
+            textColors={data.map((item) => item.style.textColor)}
+            pointerProps={{
+              src: '', // 커서 이미지 URL
+              style: pointerStyle,
+            }}
+            perpendicularText={true}
+            textDistance={80}
+          />
 
-            <StartButton
-              variant="outlined"
-              size="large"
-              onClick={startSpeechRecognition} // 음성 인식 시작
-            >
-              Start
-            </StartButton>
-          </div>
+          <StartButton
+            variant="outlined"
+            size="large"
+            onClick={startSpeechRecognition} // 음성 인식 시작
+          >
+            Start
+          </StartButton>
+
+          {/* </div> */}
         </div>
       </div>
 
